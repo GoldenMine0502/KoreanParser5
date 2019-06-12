@@ -58,6 +58,7 @@ public class SentenceParser implements IParser {
                 }
             }
 
+            // 작동하지 않을 예정인 코드
             for(int selectablesIndex = 0; selectablesIndex < selectables.size(); selectablesIndex++) {
                 String selectable = selectables.get(selectablesIndex);
                 List<Context> elementList = map.get(selectable);

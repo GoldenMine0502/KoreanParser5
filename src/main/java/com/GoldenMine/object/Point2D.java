@@ -9,7 +9,7 @@ public class Point2D implements KoreanObject {
 
     // a와 b로 좌표를 만듭니다.
     // new Point2D(x, y);
-    // x:10과 y:30으로 좌표를 만듭니다.
+    // 10과 30으로 xy좌표를 만듭니다.
 
     @Override
     public String getType() {

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Predicate만들다디스플레이 implements IPredicate {
+public class Predicate만들다객체 implements IPredicate {
     @Override
     public String getDefaultSentence() {
         return "만들다";
