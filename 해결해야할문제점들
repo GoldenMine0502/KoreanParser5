@@ -6,3 +6,5 @@
 class Variable<T> {
     T object;
 }
+
+객체를 등록할 때 regex도 등록
