@@ -39,19 +39,19 @@ public class Predicate곱하다 implements IPredicate {
         VariableStorage.setVariableAutomatically(local, variableNames, variableValues, (k, v, r) -> {
             //System.out.println(k.getMode() + ", " + k.get());
             //System.out.println(v.getMode() + ", " + v.get());
-            if(k.getMode().getMode() > v.getMode().getMode()) {
-                v.cast(k.getMode());
-            } else if(k.getMode().getMode() < v.getMode().getMode()) {
-                k.cast(v.getMode());
-            }
+
             switch(k.getMode()) {
                 case BOOLEAN_MODE:
-                    throw new RuntimeException("Boolean은 곱할 수 없습니다.");
+                    if(k.booleanValue() && v.booleanValue()) {
+                        k.set(true);
+                    } else {
+                        k.set(false);
+                    }
                 case INT_MODE:
-                    k.set((long)k.get() * (long)v.get());
+                    k.set(k.intValue() * v.intValue());
                     break;
                 case REALNUM_MODE:
-                    k.set((double)k.get() * (double)v.get());
+                    k.set(k.realNumValue() * v.realNumValue());
                     break;
                 case STRING_MODE:
                     throw new RuntimeException("String은 곱할 수 없습니다.");

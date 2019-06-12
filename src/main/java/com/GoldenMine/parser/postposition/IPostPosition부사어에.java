@@ -8,9 +8,13 @@ public class IPostPosition부사어에 implements IPostPosition {
 
     @Override
     public int verify(CharSequence last) {
-        char ch = last.charAt(last.length() - 1);
-        //System.out.println("V: " + ch);
-        return (ch == '에') ? 1 : -1;
+        if(last.length() >= 1) {
+            char ch = last.charAt(last.length() - 1);
+            //System.out.println("V: " + ch);
+            return (ch == '에') ? 1 : -1;
+        } else {
+            return -1;
+        }
     }
 
     @Override

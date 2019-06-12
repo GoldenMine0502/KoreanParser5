@@ -13,6 +13,7 @@ public class PronounStorage {
 
     private void init() {
         addPronoun(new IPronoun것());
+        addPronoun(new IPronoun나머지());
     }
 
     public IPronoun getPronoun(String key) {

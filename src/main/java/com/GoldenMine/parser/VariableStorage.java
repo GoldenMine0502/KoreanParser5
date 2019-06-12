@@ -44,6 +44,15 @@ public class VariableStorage {
             Variable variableName = variableNames.get(nameIndex);
             Variable variableValue = variableValues.get(valueIndex);
 
+            int variableNameMode = variableName.getMode().getMode();
+            int variableValueMode = variableValue.getMode().getMode();
+
+            if(variableNameMode > variableValueMode) {
+                variableValue.cast(variableName.getMode());
+            } else if(variableNameMode < variableValueMode) {
+                variableName.cast(variableValue.getMode());
+            }
+
             lambda.accept(variableName, variableValue, local);
 //            String key = (String) variableName.get();
 //            if(VariableStorage.isVariable(key)) {

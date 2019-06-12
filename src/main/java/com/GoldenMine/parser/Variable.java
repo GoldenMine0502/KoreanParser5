@@ -7,11 +7,12 @@ public class Variable {
 
 
     public enum VariableMode {
+        NULL(-1),
         BOOLEAN_MODE(0),
         INT_MODE(1),
         REALNUM_MODE(2),
         STRING_MODE(3),
-        ;
+        OBJECT_MODE(4);
 
         int mode;
 
@@ -24,7 +25,7 @@ public class Variable {
         }
 
         public static VariableMode get(int mode) {
-            switch(mode) {
+            switch (mode) {
                 case 0:
                     return BOOLEAN_MODE;
                 case 1:
@@ -33,6 +34,8 @@ public class Variable {
                     return REALNUM_MODE;
                 case 3:
                     return STRING_MODE;
+                case 4:
+                    return OBJECT_MODE;
             }
 
             return null;
@@ -43,6 +46,7 @@ public class Variable {
     private long intValue;
     private double realNumValue;
     private String stringValue;
+    private Comparable objectValue;
 
     private boolean isConst;
 
@@ -92,7 +96,7 @@ public class Variable {
     }
 
     public Object get() {
-        switch(mode) {
+        switch (mode) {
             case BOOLEAN_MODE:
                 return booleanValue();
             case INT_MODE:
@@ -101,116 +105,136 @@ public class Variable {
                 return realNumValue();
             case STRING_MODE:
                 return stringValue();
+            case OBJECT_MODE:
+                return objectValue();
         }
         return null;
     }
 
     public boolean toBoolean() {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
                 return booleanValue();
             case INT_MODE:
-                return intValue()!=0;
+                return intValue() != 0;
             case REALNUM_MODE:
-                return realNumValue()!=0;
+                return realNumValue() != 0;
             case STRING_MODE:
                 throw new CalculateException("String을 boolean으로 바꿀 수 없습니다. 0001");
+            case OBJECT_MODE:
+                throw new CalculateException("Object를 boolean으로 바꿀 수 없습니다.");
         }
         throw new CalculateException("boolean으로 바꿀 수 없습니다. 0000");
     }
 
     public boolean OR(Variable variable) {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return booleanValue() || variable.booleanValue();
                     case INT_MODE:
-                        return booleanValue() || (variable.intValue()!=0);
+                        return booleanValue() || (variable.intValue() != 0);
                     case REALNUM_MODE:
-                        return booleanValue() || (variable.realNumValue()!=0);
+                        return booleanValue() || (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("OR에서 String 연산은 불가합니다.");
+                    case OBJECT_MODE:
+                        throw new CalculateException("OR에서 Object 연산은 불가합니다.");
                 }
                 break;
             case INT_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        return (intValue()!=0) || variable.booleanValue();
+                        return (intValue() != 0) || variable.booleanValue();
                     case INT_MODE:
-                        return (intValue()!=0) || (variable.intValue()!=0);
+                        return (intValue() != 0) || (variable.intValue() != 0);
                     case REALNUM_MODE:
-                        return (intValue()!=0) || (variable.realNumValue()!=0);
+                        return (intValue() != 0) || (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("OR에서 String 연산은 불가합니다.");
+                    case OBJECT_MODE:
+                        throw new CalculateException("OR에서 Object 연산은 불가합니다.");
                 }
                 break;
             case REALNUM_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        return (realNumValue()!=0) || variable.booleanValue();
+                        return (realNumValue() != 0) || variable.booleanValue();
                     case INT_MODE:
-                        return (realNumValue()!=0) || (variable.intValue()!=0);
+                        return (realNumValue() != 0) || (variable.intValue() != 0);
                     case REALNUM_MODE:
-                        return (realNumValue()!=0) || (variable.realNumValue()!=0);
+                        return (realNumValue() != 0) || (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("OR에서 String 연산은 불가합니다.");
+                    case OBJECT_MODE:
+                        throw new CalculateException("OR에서 Object 연산은 불가합니다.");
                 }
                 break;
             case STRING_MODE:
                 throw new CalculateException("OR에서 String 연산은 불가합니다.");
+            case OBJECT_MODE:
+                throw new CalculateException("OR에서 Object 연산은 불가합니다.");
         }
         throw new CalculateException("알 수 없는 이유로 OR연산을 진행할 수 없습니다.");
     }
 
     public boolean AND(Variable variable) {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return booleanValue() && variable.booleanValue();
                     case INT_MODE:
-                        return booleanValue() && (variable.intValue()!=0);
+                        return booleanValue() && (variable.intValue() != 0);
                     case REALNUM_MODE:
-                        return booleanValue() && (variable.realNumValue()!=0);
+                        return booleanValue() && (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("AND에서 String 연산은 불가합니다. 0002");
+                    case OBJECT_MODE:
+                        throw new CalculateException("AND에서 Object 연산은 불가합니다.");
                 }
                 break;
             case INT_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        return (intValue()!=0) && variable.booleanValue();
+                        return (intValue() != 0) && variable.booleanValue();
                     case INT_MODE:
-                        return (intValue()!=0) && (variable.intValue()!=0);
+                        return (intValue() != 0) && (variable.intValue() != 0);
                     case REALNUM_MODE:
-                        return (intValue()!=0) && (variable.realNumValue()!=0);
+                        return (intValue() != 0) && (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("AND에서 String 연산은 불가합니다. 0002");
+                    case OBJECT_MODE:
+                        throw new CalculateException("AND에서 Object 연산은 불가합니다.");
                 }
                 break;
             case REALNUM_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        return (realNumValue()!=0) || variable.booleanValue();
+                        return (realNumValue() != 0) || variable.booleanValue();
                     case INT_MODE:
-                        return (realNumValue()!=0) || (variable.realNumValue()!=0);
+                        return (realNumValue() != 0) || (variable.realNumValue() != 0);
                     case REALNUM_MODE:
-                        return (realNumValue()!=0) || (variable.realNumValue()!=0);
+                        return (realNumValue() != 0) || (variable.realNumValue() != 0);
                     case STRING_MODE:
                         throw new CalculateException("AND에서 String 연산은 불가합니다. 0002");
+                    case OBJECT_MODE:
+                        throw new CalculateException("AND에서 Object 연산은 불가합니다.");
                 }
                 break;
             case STRING_MODE:
                 throw new CalculateException("AND에서 String 연산은 불가합니다. 0001");
+            case OBJECT_MODE:
+                throw new CalculateException("AND에서 Object 연산은 불가합니다.");
         }
         throw new CalculateException("알 수 없는 이유로 AND연산을 진행할 수 없습니다. 0000");
     }
 
     public boolean equals(Variable variable) {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return booleanValue() == variable.booleanValue();
                     case INT_MODE:
@@ -219,10 +243,12 @@ public class Variable {
                         return booleanValue() == (variable.realNumValue() != 0);
                     case STRING_MODE:
                         return false;
+                    case OBJECT_MODE:
+                        return false;
                 }
                 break;
             case INT_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return (intValue() != 0) == variable.booleanValue();
                     case INT_MODE:
@@ -231,22 +257,26 @@ public class Variable {
                         return intValue() == variable.realNumValue();
                     case STRING_MODE:
                         return false;
+                    case OBJECT_MODE:
+                        return false;
                 }
                 break;
             case REALNUM_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        return (realNumValue()!=0) == variable.booleanValue();
+                        return (realNumValue() != 0) == variable.booleanValue();
                     case INT_MODE:
                         return realNumValue() == variable.intValue();
                     case REALNUM_MODE:
                         return realNumValue() == variable.realNumValue();
                     case STRING_MODE:
                         return false;
+                    case OBJECT_MODE:
+                        return false;
                 }
                 break;
             case STRING_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
 
                     case BOOLEAN_MODE:
                         return false;
@@ -256,6 +286,24 @@ public class Variable {
                         return false;
                     case STRING_MODE:
                         return stringValue().equals(variable.stringValue());
+                    case OBJECT_MODE:
+                        return false;
+                }
+                break;
+
+            case OBJECT_MODE:
+                switch (variable.getMode()) {
+
+                    case BOOLEAN_MODE:
+                        return false;
+                    case INT_MODE:
+                        return false;
+                    case REALNUM_MODE:
+                        return false;
+                    case STRING_MODE:
+                        return false;
+                    case OBJECT_MODE:
+                        return variable.objectValue().equals(objectValue());
                 }
                 break;
         }
@@ -264,80 +312,70 @@ public class Variable {
     }
 
     @Override
-    public Variable clone() {
-        try {
-            Variable variable = (Variable) super.clone();
+    public Variable clone() throws CloneNotSupportedException {
+        Variable variable = (Variable) super.clone();
 
-            return variable;
-        } catch(CloneNotSupportedException ex) {
-            return null;
-        }
+        return variable;
     }
 
     public boolean smallerThan(Variable variable) {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return !booleanValue() && variable.booleanValue();
                     case INT_MODE:
-                        if(booleanValue()) {
-                            return variable.intValue()>1;
+                        if (booleanValue()) {
+                            return variable.intValue() > 1;
                         } else {
-                            return variable.intValue()>0;
+                            return variable.intValue() > 0;
                         }
                     case REALNUM_MODE:
-                        if(booleanValue()) {
-                            return variable.realNumValue()>1;
+                        if (booleanValue()) {
+                            return variable.realNumValue() > 1;
                         } else {
-                            return variable.realNumValue()>0;
+                            return variable.realNumValue() > 0;
                         }
-                    case STRING_MODE:
-                        return false;
                 }
                 break;
             case INT_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        if(variable.booleanValue()) {
-                            return intValue()<1;
+                        if (variable.booleanValue()) {
+                            return intValue() < 1;
                         } else {
-                            return intValue()<0;
+                            return intValue() < 0;
                         }
                     case INT_MODE:
                         return intValue() < variable.intValue();
                     case REALNUM_MODE:
                         return intValue() < variable.realNumValue();
-                    case STRING_MODE:
-                        return false;
                 }
                 break;
             case REALNUM_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        if(variable.booleanValue()) {
-                            return realNumValue()<1;
+                        if (variable.booleanValue()) {
+                            return realNumValue() < 1;
                         } else {
-                            return realNumValue()<0;
+                            return realNumValue() < 0;
                         }
                     case INT_MODE:
                         return realNumValue() < variable.intValue();
                     case REALNUM_MODE:
                         return realNumValue() < variable.realNumValue();
-                    case STRING_MODE:
-                        return false;
                 }
                 break;
             case STRING_MODE:
-                switch(variable.getMode()) {
-                    case BOOLEAN_MODE:
-                        return false;
-                    case INT_MODE:
-                        return false;
-                    case REALNUM_MODE:
-                        return false;
+                switch (variable.getMode()) {
                     case STRING_MODE:
-                        return stringValue().compareTo(variable.stringValue())>0;
+                        return stringValue().compareTo(variable.stringValue()) > 0;
+                }
+                break;
+            case OBJECT_MODE:
+                switch (variable.getMode()) {
+                    case OBJECT_MODE:
+                        return objectValue.compareTo(variable.objectValue) > 0;
                 }
                 break;
         }
@@ -347,69 +385,65 @@ public class Variable {
 
 
     public boolean biggerThan(Variable variable) {
-        switch(getMode()) {
+        switch (getMode()) {
             case BOOLEAN_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
                         return booleanValue() && !variable.booleanValue();
                     case INT_MODE:
-                        if(booleanValue()) {
-                            return variable.intValue()<1;
+                        if (booleanValue()) {
+                            return variable.intValue() < 1;
                         } else {
-                            return variable.intValue()<0;
+                            return variable.intValue() < 0;
                         }
                     case REALNUM_MODE:
-                        if(booleanValue()) {
-                            return variable.realNumValue()<1;
+                        if (booleanValue()) {
+                            return variable.realNumValue() < 1;
                         } else {
-                            return variable.realNumValue()<0;
+                            return variable.realNumValue() < 0;
                         }
                     case STRING_MODE:
                         return false;
                 }
                 break;
             case INT_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        if(variable.booleanValue()) {
-                            return intValue()>1;
+                        if (variable.booleanValue()) {
+                            return intValue() > 1;
                         } else {
-                            return intValue()>0;
+                            return intValue() > 0;
                         }
                     case INT_MODE:
                         return intValue() > variable.intValue();
                     case REALNUM_MODE:
                         return intValue() > variable.realNumValue();
-                    case STRING_MODE:
-                        return false;
                 }
                 break;
             case REALNUM_MODE:
-                switch(variable.getMode()) {
+                switch (variable.getMode()) {
                     case BOOLEAN_MODE:
-                        if(variable.booleanValue()) {
-                            return realNumValue()>1;
+                        if (variable.booleanValue()) {
+                            return realNumValue() > 1;
                         } else {
-                            return realNumValue()>0;
+                            return realNumValue() > 0;
                         }
                     case INT_MODE:
                         return realNumValue() > variable.intValue();
                     case REALNUM_MODE:
                         return realNumValue() > variable.realNumValue();
-                    case STRING_MODE:
-                        return false;
                 }
                 break;
             case STRING_MODE:
-                switch(variable.getMode()) {
-                    case BOOLEAN_MODE:
-                        return false;
-                    case INT_MODE:
-                        return false;
-                    case REALNUM_MODE:
-                        return false;
+                switch (variable.getMode()) {
                     case STRING_MODE:
-                        return stringValue().compareTo(variable.stringValue())<0;
+                        return stringValue().compareTo(variable.stringValue()) < 0;
+                }
+                break;
+            case OBJECT_MODE:
+                switch (variable.getMode()) {
+                    case OBJECT_MODE:
+                        return objectValue.compareTo(variable.objectValue) < 0;
                 }
                 break;
         }
@@ -418,7 +452,7 @@ public class Variable {
     }
 
     public void set(Object obj) {
-        if(!isConst) {
+        if (!isConst) {
             switch (mode) {
                 case BOOLEAN_MODE:
                     booleanValue = (boolean) obj;
@@ -432,6 +466,8 @@ public class Variable {
                 case STRING_MODE:
                     stringValue = (String) obj;
                     break;
+                case OBJECT_MODE:
+                    objectValue = (Comparable) obj;
             }
         } else {
             throw new ConstantException("상수 변수입니다.");
@@ -443,10 +479,10 @@ public class Variable {
     }
 
     public void castCompel(VariableMode toMode) {
-        if(mode.getMode() != toMode.getMode()) {
-            switch(mode) {
+        if (mode.getMode() != toMode.getMode()) {
+            switch (mode) {
                 case INT_MODE:
-                    switch(toMode) {
+                    switch (toMode) {
                         case BOOLEAN_MODE:
                             booleanValue = (intValue & 0x1) == 1;
                             break;
@@ -459,7 +495,7 @@ public class Variable {
                     }
                     break;
                 case BOOLEAN_MODE:
-                    switch(toMode) {
+                    switch (toMode) {
                         case INT_MODE:
                             intValue = booleanValue ? 1 : 0;
                             break;
@@ -472,12 +508,12 @@ public class Variable {
                     }
                     break;
                 case REALNUM_MODE:
-                    switch(toMode) {
+                    switch (toMode) {
                         case BOOLEAN_MODE:
                             booleanValue = ((int) realNumValue & 0x1) == 1;
                             break;
                         case INT_MODE:
-                            intValue = (long)realNumValue;
+                            intValue = (long) realNumValue;
                             break;
                         case STRING_MODE:
                             stringValue = String.valueOf(realNumValue);
@@ -485,7 +521,7 @@ public class Variable {
                     }
                     break;
                 case STRING_MODE:
-                    switch(toMode) {
+                    switch (toMode) {
                         case BOOLEAN_MODE:
                             booleanValue = Boolean.parseBoolean(stringValue);
                             break;
@@ -503,7 +539,7 @@ public class Variable {
     }
 
     public void cast(VariableMode toMode) {
-        if(mode.getMode() < toMode.getMode()) {
+        if (mode.getMode() < toMode.getMode()) {
             castCompel(toMode);
         }
     }
@@ -526,6 +562,10 @@ public class Variable {
 
     public boolean booleanValue() {
         return booleanValue;
+    }
+
+    public Object objectValue() {
+        return objectValue;
     }
 
 //    public Object value() {

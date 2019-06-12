@@ -33,11 +33,12 @@ public class ScriptThread {
 
             for(int pronounInfoIndex = 0; pronounInfoIndex < pronounInfoList.size(); pronounInfoIndex++) {
                 PronounInfo info = pronounInfoList.get(pronounInfoIndex);
-                applyVariable(parseContext, info.getModifying(), LOCAL);
-                info.getContext().getVariables().set(info.getVariableIndex(), info.getModifying().get서술어().perform(info.getModifying(), LOCAL));
+                applyVariable(info.getModifying(), LOCAL);
+            //    info.getContext().getVariables().set(info.getVariableIndex(), info.getModifying().get서술어().perform(info.getModifying(), LOCAL));
+                info.getContext().getVariables().set(info.getVariableIndex(), info.getModifiedKeyPronoun().perform(info.getModifying(), LOCAL));
             }
 
-            applyVariable(parseContext, lastSentence, LOCAL);
+            applyVariable(lastSentence, LOCAL);
             lastSentence.get서술어().perform(lastSentence, LOCAL);
 //            List<Variable> results = new ArrayList<>();
 //
@@ -56,12 +57,12 @@ public class ScriptThread {
         //System.out.println(LOCAL);
     }
 
-    public void applyVariable(ParseContext parseContext, Sentence sentence, VariableStorage storage) {
+    public void applyVariable(Sentence sentence, VariableStorage storage) {
         //List<String> except = sentence.get서술어().getExceptVariableParsing();
         //System.out.println("except: " + except);
 
         HashMap<String, Context> map = sentence.getMap();
-        List<Context> parseContextMap = parseContext.getParsedMap().get("서술어");
+        //List<Context> parseContextMap = parseContext.getParsedMap().get("서술어");
         // 대명사
         for (String key : map.keySet()) {
             Context context = map.get(key);
@@ -71,7 +72,7 @@ public class ScriptThread {
                 Variable variable = variables.get(variableIndex);
 
                 if (variable.getMode() == Variable.VariableMode.STRING_MODE) {
-                    String value = (String) variable.get();
+                    String value = variable.stringValue();
 
 //                    if (PronounStorage.INSTANCE.hasPronoun(value)) {
 //                        //System.out.println(value + " contain");
@@ -104,7 +105,7 @@ public class ScriptThread {
                         if (value.startsWith("[") && value.endsWith("]")) {
                             String valueCut = value.substring(1, value.length() - 1);
 
-                            Variable variableTemp = null;
+                            Variable variableTemp;
 
                             if (storage.hasVariable(valueCut)) {
                                 variableTemp = storage.getVariable(valueCut);

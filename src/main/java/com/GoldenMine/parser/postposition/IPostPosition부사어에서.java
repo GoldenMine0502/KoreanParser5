@@ -8,10 +8,15 @@ public class IPostPosition부사어에서 implements IPostPosition {
 
     @Override
     public int verify(CharSequence last) {
-        char ch = last.charAt(last.length() - 2);
-        char ch2 = last.charAt(last.length() - 1);
+        if(last.length() >= 2) {
 
-        return (ch == '에' && ch2 =='서') ? 2 : -1;
+            char ch = last.charAt(last.length() - 2);
+            char ch2 = last.charAt(last.length() - 1);
+
+            return (ch == '에' && ch2 =='서') ? 2 : -1;
+        } else {
+            return -1;
+        }
     }
 
     @Override
