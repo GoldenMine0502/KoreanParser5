@@ -12,7 +12,7 @@ public class ObjectStorage {
     }
 
     private void init() {
-
+        addCreator(new Point2DCreator());
     }
 
     public void addCreator(KoreanObjectCreator creator) {
