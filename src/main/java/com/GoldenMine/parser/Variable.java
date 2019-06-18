@@ -384,6 +384,27 @@ public class Variable {
     }
 
 
+    public boolean isTrue() {
+        switch(getMode()) {
+            case NULL:
+                return false;
+            case BOOLEAN_MODE:
+                return booleanValue;
+            case INT_MODE:
+                return intValue==1;
+            case REALNUM_MODE:
+                return realNumValue==1;
+            case STRING_MODE:
+                return false;
+            case OBJECT_MODE:
+                return false;
+        }
+
+        return false;
+    }
+
+
+
     public boolean biggerThan(Variable variable) {
         switch (getMode()) {
             case BOOLEAN_MODE:

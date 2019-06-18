@@ -37,6 +37,7 @@ public class SentenceParser implements IParser {
 
             int minimumStartRange = context.getPosStart();
 
+            // 주 성분 배분
             for(int neededsIndex = 0; neededsIndex < neededs.size(); neededsIndex++) {
                 String needed = neededs.get(neededsIndex);
                 List<Context> elementList = map.get(needed);
@@ -58,6 +59,7 @@ public class SentenceParser implements IParser {
                 }
             }
 
+            // 보조 성분 배분
             // 작동하지 않을 예정인 코드
             for(int selectablesIndex = 0; selectablesIndex < selectables.size(); selectablesIndex++) {
                 String selectable = selectables.get(selectablesIndex);
@@ -68,6 +70,11 @@ public class SentenceParser implements IParser {
                     subMap.put(selectable, element);
                 }
             }
+
+            // specific 파싱
+            
+            // Multi 파싱
+
 
             sentences.add(new Sentence(subMap, predicate));
         }

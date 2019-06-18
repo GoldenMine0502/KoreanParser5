@@ -29,7 +29,6 @@ public class ParseContext {
 
     public void parse() {
         parsed = new HashMap<>();
-
         parser.parse(this);
     }
 

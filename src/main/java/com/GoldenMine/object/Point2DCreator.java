@@ -13,9 +13,13 @@ public class Point2DCreator implements KoreanObjectCreator {
         switch(key) {
             case "x":
             case "X":
+            case "x좌표":
+            case "X좌표":
                 return Variable.VariableMode.REALNUM_MODE;
             case "y":
             case "Y":
+            case "y좌표":
+            case "Y좌표":
                 return Variable.VariableMode.REALNUM_MODE;
         }
 

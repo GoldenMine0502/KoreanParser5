@@ -17,6 +17,9 @@ public class ScriptThread {
 
     //만약 A가 B보다 크거나 같다면
 
+    //A가 B보다 크거나 같은 값이 true와 같다면
+
+
 
     public void performAll() {
         VariableStorage LOCAL = VariableStorage.createVariableStorage();
@@ -34,12 +37,31 @@ public class ScriptThread {
             for(int pronounInfoIndex = 0; pronounInfoIndex < pronounInfoList.size(); pronounInfoIndex++) {
                 PronounInfo info = pronounInfoList.get(pronounInfoIndex);
                 applyVariable(info.getModifying(), LOCAL);
-            //    info.getContext().getVariables().set(info.getVariableIndex(), info.getModifying().get서술어().perform(info.getModifying(), LOCAL));
-                info.getContext().getVariables().set(info.getVariableIndex(), info.getModifiedKeyPronoun().perform(info.getModifying(), LOCAL));
+
+                Sentence modified = info.getModified();
+                Variable result = info.getModifiedKeyPronoun().perform(info.getModifying(), LOCAL);
+
+                info.getContext().getVariables().set(info.getVariableIndex(), result);
+
+                if(modified.getSpecific() != null) {
+                    modified.getSpecific().perform(modified, LOCAL);
+                }
+                if(modified.getMultiProcessing() != null) {
+                    performIndex = modified.getMultiProcessing().execute(performIndex, modified, modified.getMultiProcessData(), result);
+                }
             }
 
+
+
             applyVariable(lastSentence, LOCAL);
-            lastSentence.get서술어().perform(lastSentence, LOCAL);
+            Variable result = lastSentence.get서술어().perform(lastSentence, LOCAL);
+
+            if(lastSentence.getSpecific() != null) {
+                lastSentence.getSpecific().perform(lastSentence, LOCAL);
+            }
+            if(lastSentence.getMultiProcessing() != null) {
+                performIndex = lastSentence.getMultiProcessing().execute(performIndex, lastSentence, lastSentence.getMultiProcessData(), result);
+            }
 //            List<Variable> results = new ArrayList<>();
 //
 //
