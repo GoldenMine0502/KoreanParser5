@@ -35,7 +35,12 @@ public class VariableStorage {
     }
 
     public static boolean isVariable(String key) {
-        return key.startsWith("[") && key.endsWith("]");
+//        if(key.startsWith("[")) {
+//
+//        }
+
+        return key.startsWith("[") && key.indexOf(']') == key.length() - 1;
+        //return key.startsWith("[") && key.endsWith("]");
     }
 
     public static void setVariableAutomatically(VariableStorage local, List<Variable> variableNames, List<Variable> variableValues, Predicate설정하다.LambdaInterface<Variable, Variable, VariableStorage> lambda) {

@@ -497,6 +497,12 @@ public class Variable {
 
     public void castCompelNoMaintain(VariableMode mode) {
         this.mode = mode;
+        if(mode != VariableMode.STRING_MODE) {
+            stringValue = null;
+        }
+        if(mode != VariableMode.OBJECT_MODE) {
+            objectValue = null;
+        }
     }
 
     public void castCompel(VariableMode toMode) {

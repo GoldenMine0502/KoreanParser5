@@ -1,5 +1,6 @@
 package com.GoldenMine.parser.parser;
 
+import com.GoldenMine.parser.Code;
 import com.GoldenMine.parser.Context;
 import com.GoldenMine.parser.ParseContext;
 import com.GoldenMine.parser.postposition.IPostPosition;
@@ -15,9 +16,9 @@ public interface IParser { // ParseContext객체를 데코레이팅
     // 때가 false이면 뒷문장을 반복함
 
 
-    void parse(ParseContext context);
+    void parse(Code code, ParseContext context, int index);
 
-    default HashMap<String, List<Context>> defaultParse(String source, List<? extends IPostPosition> josaList) {
+    default HashMap<String, List<Context>> defaultParse(String source, List<? extends IPostPosition> josaList, boolean bufferProcess, PostPositionVerify bufferVerify) {
         HashMap<String, List<Context>> map = new HashMap<>();
 
         StringBuilder buffer = new StringBuilder();
@@ -59,7 +60,12 @@ public interface IParser { // ParseContext객체를 데코레이팅
             }
 
             if (parseAvailable) {
-                PostPositionVerify josaVerify = getPostPosition(buffer, josaList);
+                PostPositionVerify josaVerify;
+                if(i == source.length() -1 && bufferProcess) {
+                    josaVerify = bufferVerify;
+                } else {
+                    josaVerify = getPostPosition(buffer, josaList);
+                }
 
                 IPostPosition josa = josaVerify.getJosa();
 
@@ -74,10 +80,10 @@ public interface IParser { // ParseContext객체를 데코레이팅
                     start = i + 1;
                 }
 
-                PostPositionVerify all = getPostPosition(buffer, JosaStorage.INSTANCE.getAllJosaList());
-                if(all.getJosa() == null) {
-                    buffer.setLength(0);
-                }
+//                PostPositionVerify all = getPostPosition(buffer, JosaStorage.INSTANCE.getAllJosaList());
+//                if(all.getJosa() == null) {
+//                    buffer.setLength(0);
+//                }
             }
             if (!successParse) {
                 buffer.append(ch);

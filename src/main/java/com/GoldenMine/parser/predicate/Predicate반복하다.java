@@ -3,13 +3,12 @@ package com.GoldenMine.parser.predicate;
 import com.GoldenMine.parser.Sentence;
 import com.GoldenMine.parser.Variable;
 import com.GoldenMine.parser.VariableStorage;
-import com.GoldenMine.parser.predicatespecific.IMultiProcessing;
 import com.GoldenMine.parser.predicatespecific.IPredicateSpecific;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import kr.co.shineware.nlp.komoran.model.KomoranResult;
 
-public class Predicate반복하다 implements IPredicate, IMultiProcessing {
+public class Predicate반복하다 implements IPredicate, IPredicateSpecific{
     @Override
     public String getDefaultSentence() {
         return "반복합니다";
@@ -36,12 +35,21 @@ public class Predicate반복하다 implements IPredicate, IMultiProcessing {
     }
 
     @Override
+    public boolean verify(String source, KomoranResult result) {
+        return false;
+    }
+
+    @Override
+    public Variable perform(Sentence sentence, VariableStorage local, Variable originalResult) {
+        return originalResult;
+    }
+    @Override
     public List<String> getOthers() {
         return Collections.singletonList("반복문의 끝");
     }
 
     @Override
-    public int execute(int line, Sentence sentence, MultiProcessData parameters, Variable result) {
-        return 0;
+    public int execute(int line, Sentence sentence, IPredicateSpecific.MultiProcessData parameters, Variable result) {
+        return line;
     }
 }

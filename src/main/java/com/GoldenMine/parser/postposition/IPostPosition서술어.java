@@ -1,5 +1,6 @@
 package com.GoldenMine.parser.postposition;
 
+import com.GoldenMine.parser.ParseContext;
 import java.util.List;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
@@ -7,11 +8,6 @@ import kr.co.shineware.nlp.komoran.model.KomoranResult;
 import kr.co.shineware.util.common.model.Pair;
 
 public class IPostPosition서술어 implements IPostPosition {
-    Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-    {
-        komoran.setFWDic("user_data/fwd.user");
-        komoran.setUserDic("user_data/dic.user");
-    }
 
     @Override
     public String getType() {
@@ -22,7 +18,7 @@ public class IPostPosition서술어 implements IPostPosition {
     public int verify(CharSequence lastSeq) {
         String lastToStr = lastSeq.toString();
 
-        KomoranResult analyzeResultList = komoran.analyze(lastToStr);
+        KomoranResult analyzeResultList = ParseContext.komoran.analyze(lastToStr);
         List<Pair<String, String>> list = analyzeResultList.getList();
         //Pair<String, String> first = list.get(0);
         Pair<String, String> last = list.get(list.size() - 1);

@@ -15,46 +15,49 @@ public class PronounParser implements IParser {
     }
 
     @Override
-    public void parse(ParseContext parseContext) {
+    public void parse(Code code, ParseContext parseContext, int index) {
         if (parser != null)
-            parser.parse(parseContext);
+            parser.parse(code, parseContext, index);
 
-        List<Context> predicates = parseContext.getParsedMap().get("서술어");
-        List<Sentence> sentences = parseContext.getSentences();
+        if(!parseContext.isNoParse()) {
 
-        for (int sentenceIndex = 0; sentenceIndex < sentences.size(); sentenceIndex++) {
-            Sentence sentence = sentences.get(sentenceIndex);
-            int sentencePos = predicates.get(sentenceIndex).getPosStart();
+            List<Context> predicates = parseContext.getParsedMap().get("서술어");
+            List<Sentence> sentences = parseContext.getSentences();
 
-            HashMap<String, Context> map = sentence.getMap();
-            for (String key : map.keySet()) {
-                if (!key.equals("서술어")) {
-                    Context context = map.get(key);
-                    for (int variableIndex = 0; variableIndex < context.getVariables().size(); variableIndex++) {
-                        Variable variable = context.getVariables().get(variableIndex);
-                        if (variable.getMode() == Variable.VariableMode.STRING_MODE) {
-                            String modifiedKey = variable.stringValue();
+            for (int sentenceIndex = 0; sentenceIndex < sentences.size(); sentenceIndex++) {
+                Sentence sentence = sentences.get(sentenceIndex);
+                int sentencePos = predicates.get(sentenceIndex).getPosStart();
 
-                            if (PronounStorage.INSTANCE.hasPronoun(variable.stringValue())) {
-                                Sentence modifying = null;
-                                int modifyingIndex = 0;
+                HashMap<String, Context> map = sentence.getMap();
+                for (String key : map.keySet()) {
+                    if (!key.equals("서술어")) {
+                        Context context = map.get(key);
+                        for (int variableIndex = 0; variableIndex < context.getVariables().size(); variableIndex++) {
+                            Variable variable = context.getVariables().get(variableIndex);
+                            if (variable.getMode() == Variable.VariableMode.STRING_MODE) {
+                                String modifiedKey = variable.stringValue();
 
-                                for(int modifyingIndexFor = sentenceIndex - 1; modifyingIndexFor >= 0; modifyingIndexFor--) {
-                                    Sentence modifyingFor = sentences.get(modifyingIndexFor);
-                                    int modifyingForIndex = predicates.get(modifyingIndexFor).getPosStart();
+                                if (PronounStorage.INSTANCE.hasPronoun(variable.stringValue())) {
+                                    Sentence modifying = null;
+                                    int modifyingIndex = 0;
 
-                                    if(sentencePos > modifyingForIndex) {
-                                        modifying = modifyingFor;
-                                        modifyingIndex = modifyingForIndex;
-                                        break;
+                                    for (int modifyingIndexFor = sentenceIndex - 1; modifyingIndexFor >= 0; modifyingIndexFor--) {
+                                        Sentence modifyingFor = sentences.get(modifyingIndexFor);
+                                        int modifyingForIndex = predicates.get(modifyingIndexFor).getPosStart();
+
+                                        if (sentencePos > modifyingForIndex) {
+                                            modifying = modifyingFor;
+                                            modifyingIndex = modifyingForIndex;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                if(modifying != null) {
-                                    PronounInfo info = new PronounInfo(modifying, modifyingIndex, sentence, sentenceIndex, context, variableIndex, modifiedKey, PronounStorage.INSTANCE.getPronoun(modifiedKey));
-                                    parseContext.getPronounInfoList().add(info);
-                                } else {
-                                    throw new RuntimeException("대명사이지만 수식받는 서술어가 없습니다.");
+                                    if (modifying != null) {
+                                        PronounInfo info = new PronounInfo(modifying, modifyingIndex, sentence, sentenceIndex, context, variableIndex, modifiedKey, PronounStorage.INSTANCE.getPronoun(modifiedKey));
+                                        parseContext.getPronounInfoList().add(info);
+                                    } else {
+                                        throw new RuntimeException("대명사이지만 수식받는 서술어가 없습니다.");
+                                    }
                                 }
                             }
                         }
