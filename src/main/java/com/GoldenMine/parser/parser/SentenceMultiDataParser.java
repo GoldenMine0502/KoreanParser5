@@ -22,18 +22,20 @@ public class SentenceMultiDataParser implements IParser {
         if(!context.isNoParse()) {
             List<Sentence> sentences = context.getSentences();
 
-            for (int sentenceIndex = 0; sentenceIndex < sentences.size(); sentenceIndex++) {
-                Sentence sentence = sentences.get(sentenceIndex);
+            //for (int sentenceIndex = ; sentenceIndex < sentences.size(); sentenceIndex++)
+            {
+                Sentence sentence = sentences.get(sentences.size() - 1);
                 IPredicateSpecific specific = sentence.getSpecific();
 
 
                 if (specific != null) {
                     List<String> others = specific.getOthers();
+                    System.out.println("not null specific " + index + ", " + others.size());
 
                     int overlap = 0;
                     Integer[] multiIndex = new Integer[others.size() + 1];
                     multiIndex[0] = index;
-                    for (int i = 1; i < others.size(); i++) {
+                    for (int i = 1; i < multiIndex.length; i++) {
                         multiIndex[i] = -1;
                     }
                     int set = 0;
@@ -52,6 +54,7 @@ public class SentenceMultiDataParser implements IParser {
                         }
                         if(parseContext.isNoParse()) {
                             int containsSource = others.indexOf(source);
+                            System.out.println(source + ", " + others + ", " + containsSource);
                             if (containsSource >= 0) {
                                 if (overlap == 0) {
                                     multiIndex[containsSource + 1] = line;
@@ -66,6 +69,8 @@ public class SentenceMultiDataParser implements IParser {
                                 }
                             }
                         }
+
+                        System.out.println(line + ", " + overlap);
                     }
 
                     //System.out.println(multiIndex[0] + ", " + multiIndex[1]);
@@ -74,6 +79,7 @@ public class SentenceMultiDataParser implements IParser {
 
                     sentence.setMultiProcessData(data);
                     for (int i = 1; i < multiIndex.length; i++) {
+                        //System.out.println(multiIndex[i]==null);
                         int value = multiIndex[i];
                         if (value != -1) {
                             ParseContext secondary = code.getSourceCode().get(value);

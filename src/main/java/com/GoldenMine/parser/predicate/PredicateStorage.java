@@ -2,6 +2,7 @@ package com.GoldenMine.parser.predicate;
 
 import com.GoldenMine.parser.ParseContext;
 import com.GoldenMine.parser.predicatespecific.IPredicateSpecific;
+import com.GoldenMine.parser.predicatespecific.Predicate반복하다;
 import com.GoldenMine.parser.predicatespecific.SpecificIF;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,11 @@ public class PredicateStorage {
         addPredicate(new Predicate같다());
         //System.out.println("A");
         addPredicateSpecific(new SpecificIF());
+
+        Predicate반복하다 반복하다 = new Predicate반복하다();
+
+        addPredicate(반복하다);
+        addPredicateSpecific(반복하다);
         //System.out.println("predicate add");
     }
 
@@ -53,7 +59,11 @@ public class PredicateStorage {
 
     public IPredicate getPredicate(String str) {
         //System.out.println(ParseContext.komoran.analyze(str).getList().get(0).getFirst());
-        return predicates.get(ParseContext.komoran.analyze(str).getList().get(0).getFirst());
+        return predicates.get(getRoot(str));
+    }
+
+    public static String getRoot(String str) {
+        return ParseContext.komoran.analyze(str).getList().get(0).getFirst();
     }
 
     public HashSet<? extends String> getNoParses() {

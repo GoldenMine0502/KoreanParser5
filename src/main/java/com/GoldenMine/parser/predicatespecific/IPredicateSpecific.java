@@ -14,7 +14,7 @@ public interface IPredicateSpecific {
 
     List<String> getOthers();
 
-    int execute(int line, Sentence sentence, MultiProcessData parameters, Variable result);
+    int execute(int line, Sentence sentence, MultiProcessData parameters, List<Variable> results);
 
     class MultiProcessData {
         private List<Integer> applyLine;

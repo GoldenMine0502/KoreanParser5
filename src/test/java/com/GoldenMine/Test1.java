@@ -43,7 +43,26 @@ public class Test1 {
         runCode(sources);
     }
 
+    @Test
+    public void test3() {
+        List<String> sources = new ArrayList<>();
+        sources.add("[A]를 0으로 설정합니다");
+        sources.add("[A]가 5와 같으면 반복합니다");
+        sources.add("[A]를 출력합니다");
+        sources.add("반복문의 끝");
+        sources.add("ended를 출력합니다");
 
+        runCode(sources);
+    }
+
+    /*
+    Q) IF문 또는 WHILE문이 안길 수 있는가?
+        예시) 만약 A가 B와 같다면을 출력합니다
+        문법 자체로도 문제고 논리적으로 어색하기 때문에 컴파일 자체가 불가능하도록 해야 함
+        IF문은 어찌어찌 조사를 이용해 고비를 넘겼으나, 반복문은 어려울 것으로 예상됨.
+
+        Predicate마다 필요한 조각조각을 인터페이스화시켜 이를 구분할 방법이 없을까
+     */
 
 
     public void runCode(List<String> sources) {

@@ -1,8 +1,10 @@
-package com.GoldenMine.parser.predicate;
+package com.GoldenMine.parser.predicatespecific;
 
 import com.GoldenMine.parser.Sentence;
 import com.GoldenMine.parser.Variable;
 import com.GoldenMine.parser.VariableStorage;
+import com.GoldenMine.parser.predicate.IPredicate;
+import com.GoldenMine.parser.predicate.PredicateStorage;
 import com.GoldenMine.parser.predicatespecific.IPredicateSpecific;
 import java.util.Collections;
 import java.util.List;
@@ -30,13 +32,13 @@ public class Predicate반복하다 implements IPredicate, IPredicateSpecific{
     }
 
     @Override
-    public Variable perform(Sentence sentence, VariableStorage local) {
+    public Variable perform(Sentence sentence, VariableStorage local) { // void 메소드
         return null;
     }
 
     @Override
     public boolean verify(String source, KomoranResult result) {
-        return false;
+        return result.getList().get(0).getFirst().equals(PredicateStorage.getRoot(getDefaultSentence()));
     }
 
     @Override
@@ -49,7 +51,16 @@ public class Predicate반복하다 implements IPredicate, IPredicateSpecific{
     }
 
     @Override
-    public int execute(int line, Sentence sentence, IPredicateSpecific.MultiProcessData parameters, Variable result) {
+    public int execute(int line, Sentence sentence, IPredicateSpecific.MultiProcessData parameters, List<Variable> results) {
+        if(line == parameters.getAppliedValue(0)) {
+            Variable result = results.get(results.size() - 1);
+
+            if(!result.isTrue()) {
+                return parameters.getAppliedValue(1);
+            }
+        } else if(line == parameters.getAppliedValue(1)){
+            return parameters.getAppliedValue(0) - 1;
+        }
         return line;
     }
 }

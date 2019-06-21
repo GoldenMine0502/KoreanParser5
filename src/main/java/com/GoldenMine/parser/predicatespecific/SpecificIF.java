@@ -16,8 +16,10 @@ public class SpecificIF implements IPredicateSpecific {
     }
 
     @Override
-    public int execute(int line, Sentence sentence, MultiProcessData parameters, Variable result) {
+    public int execute(int line, Sentence sentence, MultiProcessData parameters, List<Variable> results) {
         if(line == parameters.getAppliedValue(0)) {
+            Variable result = results.get(results.size() - 1);
+
             boolean istrue = result.isTrue();
             parameters.setMeta(istrue);
 

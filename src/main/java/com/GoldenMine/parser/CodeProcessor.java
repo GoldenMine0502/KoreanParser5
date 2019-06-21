@@ -3,6 +3,7 @@ package com.GoldenMine.parser;
 import com.GoldenMine.parser.parser.IParser;
 import com.GoldenMine.parser.predicate.PredicateStorage;
 import com.GoldenMine.parser.predicatespecific.IPredicateSpecific;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +46,15 @@ public class CodeProcessor {
         }
     }
 
+
+    /*
+    ex ) [A]가 [B]와 같을 때 반복합니다
+    ex2) [A]가 [B]와 같을 때까지 반복합니다
+
+
+
+     */
+
     public void perform() {
         List<ParseContext> sourceCode = code.getSourceCode();
         VariableStorage LOCAL = VariableStorage.createVariableStorage();
@@ -59,6 +69,9 @@ public class CodeProcessor {
                 } else {
                     List<Sentence> sentences = parseContext.getSentences();
                     List<PronounInfo> pronounInfoList = parseContext.getPronounInfoList();
+                    List<Variable> variableReturns = new ArrayList<>();
+
+
                     Sentence lastSentence = sentences.get(sentences.size() - 1);
 
                     for (int pronounInfoIndex = 0; pronounInfoIndex < pronounInfoList.size(); pronounInfoIndex++) {
@@ -67,18 +80,22 @@ public class CodeProcessor {
 
                         Sentence modified = info.getModified();
                         Variable result = info.getModifiedKeyPronoun().perform(info.getModifying(), LOCAL);
+                        variableReturns.add(result);
+
                         info.getContext().getVariables().set(info.getVariableIndex(), result);
 
                         if (modified.getSpecific() != null) {
-                            performIndex = modified.getSpecific().execute(performIndex, modified, modified.getMultiProcessData(), result);
+                            performIndex = modified.getSpecific().execute(performIndex, modified, modified.getMultiProcessData(), variableReturns);
                         }
                     }
 
                     applyVariable(lastSentence, LOCAL);
                     Variable result = lastSentence.get서술어().perform(lastSentence, LOCAL);
+                    variableReturns.add(result);
 
+                    // sentence 순차순으로 가되, Pronoun으로 판단된 문장은 명사에 리턴값을 넣는 코드를 넣어야 함
                     if (lastSentence.getSpecific() != null) {
-                        performIndex = lastSentence.getSpecific().execute(performIndex, lastSentence, lastSentence.getMultiProcessData(), result);
+                        performIndex = lastSentence.getSpecific().execute(performIndex, lastSentence, lastSentence.getMultiProcessData(), variableReturns);
                     }
                 }
             } catch(Exception ex) {
