@@ -154,7 +154,7 @@ public class CodeProcessor {
 
         while (pos < sb.length()) {
             char ch = sb.charAt(pos);
-            ++pos;
+            pos++;
             if (ch == '[')
                 pos = processVariable(sb, pos, true, storage);
             else if (ch == ']')
