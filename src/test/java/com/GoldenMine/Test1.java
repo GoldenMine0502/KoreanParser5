@@ -50,7 +50,7 @@ public class Test1 {
         Code code = new Code(sources);
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(true);
-        codeProcessor.compile(new SentenceMultiDataParser(new PronounParser(new VariableConnectorParser(new SentenceParser(new DefaultParser(null))))));
+        codeProcessor.compile(new SentenceMultiDataParser(new PronounParser(new VariableConnectorParser(new SentenceParser(new BoeoParser(new DefaultParser(null)))))));
         codeProcessor.perform();
     }
 }
