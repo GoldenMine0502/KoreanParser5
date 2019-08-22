@@ -1,7 +1,7 @@
-package com.GoldenMine.parser;
+package com.goldenmine.parser;
 
-import com.GoldenMine.parser.pronoun.IPronoun;
-import com.GoldenMine.parser.pronoun.PronounStorage;
+import com.goldenmine.parser.pronoun.IPronoun;
+import com.goldenmine.parser.pronoun.PronounStorage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
