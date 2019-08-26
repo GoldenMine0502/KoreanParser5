@@ -23,6 +23,9 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
             val predicateContexts = parseContext.parsedMap["서술어"]
             //val toAddMap = HashMap<String, MutableList<Context>>()
 
+            if(debug)
+                println("SentenceLastParser-predicates: ${parseContext.parsedMap["서술어"]}")
+
             val toAddMap = HashMap<String, MutableList<Context>>()
 
             val map = HashMap(parseContext.parsedMap)

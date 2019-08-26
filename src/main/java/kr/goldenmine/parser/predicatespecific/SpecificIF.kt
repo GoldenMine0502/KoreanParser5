@@ -1,7 +1,7 @@
 package kr.goldenmine.parser.predicatespecific
 
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import kr.co.shineware.nlp.komoran.model.KomoranResult
 import java.util.*

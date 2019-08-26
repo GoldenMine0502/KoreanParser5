@@ -1,7 +1,7 @@
 package kr.goldenmine.parser.pronoun
 
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 
 class IPronoun것 : IPronoun {

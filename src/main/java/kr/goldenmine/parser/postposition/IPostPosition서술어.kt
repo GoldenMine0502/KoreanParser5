@@ -18,16 +18,18 @@ class IPostPosition서술어 : IPostPosition {
 
         for(ch in lastSeq) {
             if(ch == '\'') {
-                if(mode == 0) mode = 1
-                if(mode == 1) {
+                if(mode == 0) {
+                    mode = 1
+                } else if(mode == 1) {
                     mode = 0
                     builder.append(defaultWord)
                 }
                 continue
             }
             if(ch == '\"') {
-                if(mode == 0) mode = 2
-                if(mode == 2) {
+                if(mode == 0) {
+                    mode = 2
+                } else if(mode == 2) {
                     mode = 0
                     builder.append(defaultWord)
                 }
@@ -39,6 +41,8 @@ class IPostPosition서술어 : IPostPosition {
         }
 
         val lastToStr = builder.toString()
+
+        //println("lasttostr서술어: $lastToStr")
 
 
 

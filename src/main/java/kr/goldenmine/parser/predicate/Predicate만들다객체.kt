@@ -1,17 +1,24 @@
 package kr.goldenmine.parser.predicate
 
+import kr.goldenmine.objects.ObjectStorage
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import java.util.*
 
 class Predicate만들다객체 : IPredicate {
     override val neededReplaceVariable: List<Boolean>
         get() = listOf(true, true)
+
     override val optionalReplaceVariable: List<Boolean>
         get() = listOf()
 
+    override val neededSetters: List<Boolean>
+        get() = listOf(false, false)
+
+    override val optionalSetters: List<Boolean>
+        get() = listOf()
     override val defaultSentence: String
         get() = "만들다"
 
@@ -31,8 +38,20 @@ class Predicate만들다객체 : IPredicate {
     // 문장성분이 존재하지 않으면 조사생략 -> 앞문장 전체
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable? {
+        val 목적어 = sentence.map["목적어"]!!.variables!!
+        val 부사어로 = sentence.map["부사어로"]!!.variables!!
 
-        return null
+        val predicate = ObjectStorage.INSTANCE.getCreator(목적어[0]!!.stringValue())
+        if (predicate != null) {
+            val instance = predicate.instance
+
+            for (i in 부사어로.indices) {
+                instance.setValue(i, 부사어로[i]!!.get())
+            }
+            return Variable(instance)
+        } else {
+            throw RuntimeException("해당하는 이름의 객체가 없습니다.")
+        }
     }
 
     override fun isAccord(contexts: HashMap<String, Context>, metadata: List<Any>?): Boolean {

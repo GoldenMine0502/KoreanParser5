@@ -1,6 +1,4 @@
-package kr.goldenmine.`object`
-
-import kr.goldenmine.parser.Variable
+package kr.goldenmine.objects
 
 interface KoreanObjectCreator {
     val type: String
@@ -14,5 +12,5 @@ interface KoreanObjectCreator {
     val regex: String
 
     val instance: KoreanObject
-    fun getValueType(key: String): Variable.VariableMode
+    fun getValueType(key: String): VariableMode
 }

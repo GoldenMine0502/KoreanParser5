@@ -2,7 +2,8 @@ package kr.goldenmine.parser.predicate
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.VariableMode
 import kr.goldenmine.parser.VariableStorage
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
@@ -11,6 +12,12 @@ class Predicate곱하다 : IPredicate {
     override val neededReplaceVariable: List<Boolean>
         get() = listOf(true, true)
     override val optionalReplaceVariable: List<Boolean>
+        get() = listOf()
+
+    override val neededSetters: List<Boolean>
+        get() = listOf(false, false)
+
+    override val optionalSetters: List<Boolean>
         get() = listOf()
 
     override val defaultSentence: String
@@ -42,7 +49,7 @@ class Predicate곱하다 : IPredicate {
             //System.out.println(v.getMode() + ", " + v.get());
 
             when (k.mode) {
-                Variable.VariableMode.BOOLEAN_MODE -> {
+                VariableMode.BOOLEAN_MODE -> {
                     if (k.booleanValue() && v.booleanValue()) {
                         k.set(true)
                     } else {
@@ -50,9 +57,9 @@ class Predicate곱하다 : IPredicate {
                     }
                     k.set(k.intValue() * v.intValue())
                 }
-                Variable.VariableMode.INT_MODE -> k.set(k.intValue() * v.intValue())
-                Variable.VariableMode.REALNUM_MODE -> k.set(k.realNumValue() * v.realNumValue())
-                Variable.VariableMode.STRING_MODE -> throw RuntimeException("String은 곱할 수 없습니다.")
+                VariableMode.INT_MODE -> k.set(k.intValue() * v.intValue())
+                VariableMode.REALNUM_MODE -> k.set(k.realNumValue() * v.realNumValue())
+                VariableMode.STRING_MODE -> throw RuntimeException("String은 곱할 수 없습니다.")
             }
             returnVariable.set(k)
         }

@@ -1,7 +1,8 @@
 package kr.goldenmine.parser.parser
 
 import kr.goldenmine.parser.Context
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.parser.parseVariable
 import kr.goldenmine.parser.postposition.JosaCommunity
 import kr.goldenmine.parser.postposition.JosaStorage
 import java.util.ArrayList
@@ -17,5 +18,5 @@ fun parseVariableAndConnector(context: Context): MutableList<Variable?> {
         result = ArrayList()
     }
     //println(result)
-    return result.stream().map { Context.parseVariable(it.source) }.collect(Collectors.toList())
+    return result.stream().map { parseVariable(it.source) }.collect(Collectors.toList())
 }

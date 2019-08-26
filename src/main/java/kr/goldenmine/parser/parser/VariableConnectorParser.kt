@@ -1,13 +1,9 @@
 package kr.goldenmine.parser.parser
 
 import kr.goldenmine.parser.Code
-import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
-import kr.goldenmine.parser.Variable
 import kr.goldenmine.parser.postposition.JosaCommunity
 import kr.goldenmine.parser.postposition.JosaStorage
-import java.util.*
-import java.util.stream.Collectors
 
 class VariableConnectorParser(private val parser: IParser?) : IParser {
 
@@ -28,8 +24,9 @@ class VariableConnectorParser(private val parser: IParser?) : IParser {
 
                 for (i in value.indices) {
                     val context = value[i]
-                    //println(context.source)
-                    context.setVariable(parseVariableAndConnector(context))
+                    if(debug)
+                        println("variableconnector: ${context.source}")
+                    context.variables = parseVariableAndConnector(context)
 //                    var result: List<Context>? = defaultParse(context.source, 접속조사리스트, true, predicateVerify)["접속조사"]
 //                    //println(result)
 //                    if (result == null) {

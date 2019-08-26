@@ -3,7 +3,7 @@ package kr.goldenmine.parser
 import kr.goldenmine.impl.CalculateException
 import kr.goldenmine.impl.ConstantException
 
-class Variable : Cloneable {
+class VariableOld : Cloneable {
 
     private var booleanValue: Boolean = false
     private var intValue: Long = 0
@@ -63,7 +63,7 @@ class Variable : Cloneable {
         }
     }
 
-    constructor(variable: Variable) {
+    constructor(variable: VariableOld) {
         this.mode = variable.mode
         this.booleanValue = variable.booleanValue
         this.intValue = variable.intValue
@@ -137,7 +137,7 @@ class Variable : Cloneable {
         throw CalculateException("boolean으로 바꿀 수 없습니다. 0000")
     }
 
-    fun OR(variable: Variable): Boolean {
+    fun OR(variable: VariableOld): Boolean {
         when (mode) {
             VariableMode.BOOLEAN_MODE -> when (variable.mode) {
                 VariableMode.BOOLEAN_MODE -> return booleanValue() || variable.booleanValue()
@@ -166,7 +166,7 @@ class Variable : Cloneable {
         throw CalculateException("알 수 없는 이유로 OR연산을 진행할 수 없습니다.")
     }
 
-    fun AND(variable: Variable): Boolean {
+    fun AND(variable: VariableOld): Boolean {
         when (mode) {
             VariableMode.BOOLEAN_MODE -> when (variable.mode) {
                 VariableMode.BOOLEAN_MODE -> return booleanValue() && variable.booleanValue()
@@ -198,7 +198,7 @@ class Variable : Cloneable {
 
 
     override fun equals(variable: Any?): Boolean {
-        if(variable is Variable) {
+        if(variable is VariableOld) {
             //println(mode)
             //println(variable.mode)
 
@@ -255,12 +255,12 @@ class Variable : Cloneable {
     }
 
     @Throws(CloneNotSupportedException::class)
-    override fun clone(): Variable {
+    override fun clone(): VariableOld {
 
-        return super.clone() as Variable
+        return super.clone() as VariableOld
     }
 
-    fun smallerThan(variable: Variable): Boolean {
+    fun smallerThan(variable: VariableOld): Boolean {
         when (mode) {
             VariableMode.BOOLEAN_MODE -> when (variable.mode) {
                 VariableMode.BOOLEAN_MODE -> return !booleanValue() && variable.booleanValue()
@@ -305,7 +305,7 @@ class Variable : Cloneable {
     }
 
 
-    fun biggerThan(variable: Variable): Boolean {
+    fun biggerThan(variable: VariableOld): Boolean {
         when (mode) {
             VariableMode.BOOLEAN_MODE -> when (variable.mode) {
                 VariableMode.BOOLEAN_MODE -> return booleanValue() && !variable.booleanValue()

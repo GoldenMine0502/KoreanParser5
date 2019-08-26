@@ -3,6 +3,7 @@ package kr.goldenmine.parser.parser
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
 import kr.goldenmine.parser.Sentence
+import kr.goldenmine.parser.parseVariable
 import kr.goldenmine.parser.postposition.JosaCommunity
 import kr.goldenmine.parser.postposition.JosaStorage
 import kr.goldenmine.parser.predicate.IPredicate
@@ -411,7 +412,7 @@ fun splitPredicateSource2(srcContext: Context): HashMap<String, MutableList<Cont
         }
 
         val context = Context(source.substring(0, sum), false, srcContext.posStart, srcContext.posStart + sum)
-        context.setVariable(boeo.stream().map { Context.parseVariable(it.source) }.collect(Collectors.toList()))
+        context.variables = boeo.stream().map { parseVariable(it.source) }.collect(Collectors.toList())
 
         //val seo = src.substring(sum + 2)
         //val context2 = Context(seo, false, srcContext.posStart + sum + 2, srcContext.posFinish)

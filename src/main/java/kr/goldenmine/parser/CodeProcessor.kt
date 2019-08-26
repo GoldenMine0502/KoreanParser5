@@ -1,5 +1,9 @@
 package kr.goldenmine.parser
 
+import kr.goldenmine.objects.KoreanObject
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.VariableMode
+import kr.goldenmine.objects.objects.defaults.ObjectString
 import kr.goldenmine.parser.parser.IParser
 import kr.goldenmine.parser.predicatespecific.IPredicateSpecific
 import kr.goldenmine.parser.predicatespecific.IPredicateSpecificPost
@@ -82,7 +86,7 @@ class CodeProcessor(
                 if (parseContext.isNoParse) {
                     val sentence = parseContext.sentences[0]
                     //println("noparse $performIndex ${sentence.specific != null}")
-                    if(sentence.specific != null) {
+                    if (sentence.specific != null) {
                         performIndex = sentence.specific.execute(performIndex, metadata, sentence, sentence.multiProcessData, null)
                         //println("${sentence.multiProcessData}")
                     }
@@ -105,7 +109,7 @@ class CodeProcessor(
                             val info = pronounInfoList[pronounInfoIndex]
                             if (sentence === info.modifying) {
                                 // TO/DO PronounParser에 이미 존재하는 대명사는 제외 코드 작성
-                                if(debug) println("codeprocessor-pronoun: $pronounInfoIndex ${info.modifying.서술어.defaultSentence}")
+                                if (debug) println("codeprocessor-pronoun: $pronounInfoIndex ${info.modifying.서술어.defaultSentence}")
 
                                 pronoun = info
                                 pronounInfoIndex++
@@ -114,7 +118,7 @@ class CodeProcessor(
 
                         val result: Variable?
 
-                        if(pronoun != null) {
+                        if (pronoun != null) {
                             result = pronoun.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
                             pronoun.context.variables!![pronoun.variableIndex] = result
                         } else {
@@ -123,22 +127,22 @@ class CodeProcessor(
 
 
                         variableReturns.add(result)
-                        if(debug)
+                        if (debug)
                             println("codeprocessor-result: $performIndex $result // $variableReturns")
 
                         //println("$performIndex: ${sentence.specific!=null}")
 
-                        if(postedSpecific != null) {
-                            postedSpecific.perform(sentence, metadata,LOCAL, variableReturns)
+                        if (postedSpecific != null) {
+                            postedSpecific.perform(sentence, metadata, LOCAL, variableReturns)
                             postedSpecific.execute(performIndex, metadata, sentence, sentence.multiProcessData, variableReturns)
                             postedSpecific = null
                         }
 
                         if (sentence.specific != null) {
-                            if(sentence.specific is IPredicateSpecificPost) {
+                            if (sentence.specific is IPredicateSpecificPost) {
                                 postedSpecific = sentence.specific
                             } else {
-                                sentence.specific.perform(sentence, metadata,LOCAL, variableReturns)
+                                sentence.specific.perform(sentence, metadata, LOCAL, variableReturns)
                                 performIndex = sentence.specific.execute(performIndex, metadata, sentence, sentence.multiProcessData, variableReturns)
                             }
                         }
@@ -207,7 +211,7 @@ class CodeProcessor(
 
         for (key in map.keys) {
             val context = map[key]
-            if(context != null) {
+            if (context != null) {
                 val variables = context.variables!!
                 val variableGenitives = context.genitiveList!!
 
@@ -215,13 +219,51 @@ class CodeProcessor(
                     val variable = variables[variableIndex]
 
                     if (variable != null && replaceable[key]!!) {
-                        if(variableGenitives[variableIndex] != null) {
+                        val genitives = variableGenitives[variableIndex]
 
-                        }
-                        if (variable.mode == Variable.VariableMode.STRING_MODE) {
+                        if (genitives != null) {
+                            var currentIndex = 0
+
+                            var result: KoreanObject = genitives[0].get()
+
+                            if(result is ObjectString && VariableStorage.isVariable(result.getRoot() as String)) {
+                                val value = result.getRoot() as String
+                                val valueCut = value.substring(1, value.length - 1)
+                                if (storage.hasVariable(valueCut)) {
+                                    result = storage.getVariable(valueCut)!!.get()
+                                } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
+                                    result = VariableStorage.GLOBAL.getVariable(valueCut)!!.get()
+                                } else {
+                                    val variable = Variable(0, false)
+                                    result = variable.get()
+                                    storage.setVariable(valueCut, variable)
+                                }
+                            }
+
+                            if(debug)
+                                println("result: $result")
+
+                            while (currentIndex < genitives.size - 1) {
+                                val next = genitives[currentIndex + 1]
+
+                                val tempResult = result.getValue(next.get().toString())
+                                if(tempResult != null) {
+                                    result = tempResult
+                                } else {
+                                    throw RuntimeException("속성 ${next.get()}이(가) 존재하지 않습니다.")
+                                }
+                                currentIndex++
+                            }
+
+                            if (debug) {
+                                println("genitiveResult: $result")
+                            }
+
+                            variable.set(result)
+                        } else if (variable.mode == VariableMode.STRING_MODE) {
                             val value = variable.stringValue()
 
-                            if (VariableStorage.isVariable(value!!)) {
+                            if (VariableStorage.isVariable(value)) {
                                 //println(value)
                                 val sb = StringBuilder(value.substring(1, value.length - 1))
                                 processVariable(sb, 0, false, storage)
@@ -242,12 +284,12 @@ class CodeProcessor(
                                 if (variableTemp != null) {
                                     variables[variableIndex] = variableTemp
                                 } else {
-                                    throw RuntimeException(valueCut + "에 대한 변수 값이 초기화되지 않았습니다. (thread safety 문제) ")
+                                    throw ConcurrentModificationException(valueCut + "에 대한 변수 값이 초기화되지 않았습니다. (thread safety 문제) ")
                                 }
                             } else {
                                 val sb = StringBuilder(value)
                                 processVariable(sb, 0, false, storage)
-                                variable.castCompelNoMaintain(Variable.VariableMode.STRING_MODE)
+                                //variable.castCompelNoMaintain(Variable.VariableMode.STRING_MODE)
                                 variable.set(sb.toString())
                             }
                         }
@@ -258,7 +300,6 @@ class CodeProcessor(
     }
 
     companion object {
-
         fun processVariable(sb: StringBuilder, pos: Int, inner: Boolean, storage: VariableStorage): Int {
             var pos = pos
             val start = pos

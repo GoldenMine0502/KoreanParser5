@@ -1,6 +1,6 @@
 package kr.goldenmine.parser.predicate
 
-import kr.goldenmine.`object`.ObjectStorage
+import kr.goldenmine.objects.ObjectStorage
 import kr.goldenmine.parser.VariableStorage
 
 enum class ValueScope(val lambda: (String) -> Boolean) {

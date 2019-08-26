@@ -1,5 +1,6 @@
-package kr.goldenmine.`object`
+package kr.goldenmine.objects
 
+import kr.goldenmine.objects.creators.*
 import java.util.*
 
 class ObjectStorage private constructor() {
@@ -12,6 +13,11 @@ class ObjectStorage private constructor() {
 
     private fun init() {
         addCreator(Point2DCreator())
+        addCreator(Point3DCreator())
+        addCreator(ObjectBooleanCreator())
+        addCreator(ObjectCharCreator())
+        addCreator(ObjectIntegerCreator())
+        addCreator(ObjectStringCreator())
     }
 
     fun addCreator(creator: KoreanObjectCreator) {

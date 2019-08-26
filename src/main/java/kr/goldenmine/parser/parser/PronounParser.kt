@@ -1,6 +1,8 @@
 package kr.goldenmine.parser.parser
 
 import kr.goldenmine.impl.CompileException
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.VariableMode
 import kr.goldenmine.parser.*
 import kr.goldenmine.parser.pronoun.PronounStorage
 
@@ -28,7 +30,7 @@ class PronounParser(private val parser: IParser?) : IParser {
                             if (context.variables != null) {
                                 for (variableIndex in 0 until context.variables!!.size) {
                                     val variable = context.variables!![variableIndex]
-                                    if (variable != null && variable.mode == Variable.VariableMode.STRING_MODE) {
+                                    if (variable != null && variable.mode == VariableMode.STRING_MODE) {
                                         val modifiedKey = variable.stringValue()
 
                                         if (!alreadyAdded.contains(variable) && PronounStorage.INSTANCE.hasPronoun(variable.stringValue())) {

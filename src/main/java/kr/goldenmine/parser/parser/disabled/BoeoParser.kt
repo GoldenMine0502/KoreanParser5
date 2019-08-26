@@ -3,6 +3,7 @@ package kr.goldenmine.parser.parser.disabled
 import kr.goldenmine.parser.Code
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
+import kr.goldenmine.parser.parseVariable
 import kr.goldenmine.parser.parser.IParser
 import kr.goldenmine.parser.parser.defaultParse
 import kr.goldenmine.parser.postposition.IPostPosition
@@ -53,7 +54,7 @@ class BoeoParser(private val parser: IParser?) : IParser {
                         }
 
                         val context = Context(src.substring(0, sum), false, srcContext.posStart, srcContext.posStart + sum)
-                        context.setVariable(boeo.stream().map { Context.parseVariable(it.source) }.collect(Collectors.toList()))
+                        context.variables = boeo.stream().map { parseVariable(it.source) }.collect(Collectors.toList())
 
                         val seo = src.substring(sum + 2)
                         val context2 = Context(seo, false, srcContext.posStart + sum + 2, srcContext.posFinish)

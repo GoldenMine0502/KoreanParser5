@@ -1,5 +1,6 @@
 package kr.goldenmine.parser
 
+import kr.goldenmine.objects.Variable
 import java.util.*
 
 class VariableStorage private constructor(name: String) {

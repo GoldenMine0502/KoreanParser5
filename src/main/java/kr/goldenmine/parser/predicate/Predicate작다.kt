@@ -2,7 +2,7 @@ package kr.goldenmine.parser.predicate
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import java.util.HashMap
 
@@ -14,6 +14,11 @@ class Predicate작다 : IPredicate {
     override val optionalReplaceVariable: List<Boolean>
         get() = listOf()
 
+    override val neededSetters: List<Boolean>
+        get() = listOf(false, false)
+
+    override val optionalSetters: List<Boolean>
+        get() = listOf()
     override val defaultSentence: String
         get() = "작다"
     override val neededSentenceElements: List<String>

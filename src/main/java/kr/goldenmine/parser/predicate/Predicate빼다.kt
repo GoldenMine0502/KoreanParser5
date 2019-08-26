@@ -2,7 +2,8 @@ package kr.goldenmine.parser.predicate
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.VariableMode
 import kr.goldenmine.parser.VariableStorage
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
@@ -13,6 +14,11 @@ class Predicate빼다 : IPredicate {
     override val optionalReplaceVariable: List<Boolean>
         get() = listOf()
 
+    override val neededSetters: List<Boolean>
+        get() = listOf(false, false)
+
+    override val optionalSetters: List<Boolean>
+        get() = listOf()
     override val defaultSentence: String
         get() = "빼다"
 
@@ -39,10 +45,10 @@ class Predicate빼다 : IPredicate {
 
         VariableStorage.setVariableAutomatically(local, variableNamesCopy, variableValues) { k, v, r ->
             when (k.mode) {
-                Variable.VariableMode.BOOLEAN_MODE -> throw RuntimeException("Boolean은 뺄 수 없습니다.")
-                Variable.VariableMode.INT_MODE -> k.set(k.intValue() - v.intValue())
-                Variable.VariableMode.REALNUM_MODE -> k.set(k.realNumValue() - v.realNumValue())
-                Variable.VariableMode.STRING_MODE -> throw RuntimeException("String은 뺄 수 없습니다.")
+                VariableMode.BOOLEAN_MODE -> throw RuntimeException("Boolean은 뺄 수 없습니다.")
+                VariableMode.INT_MODE -> k.set(k.intValue() - v.intValue())
+                VariableMode.REALNUM_MODE -> k.set(k.realNumValue() - v.realNumValue())
+                VariableMode.STRING_MODE -> throw RuntimeException("String은 뺄 수 없습니다.")
             }
             returnVariable.set(k)
         }

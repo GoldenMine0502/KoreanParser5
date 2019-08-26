@@ -1,5 +1,6 @@
 package kr.goldenmine;
 
+import java.util.Arrays;
 import junit.framework.TestCase;
 import kr.goldenmine.parser.Code;
 import kr.goldenmine.parser.CodeProcessor;
@@ -22,7 +23,7 @@ public class Test1 extends TestCase {
         sources.add("~~[B]~~를 출력합니다");
         sources.add("[A],[B]를 출력합니다");
 
-        runCode(sources, true);
+        runCode(sources, false);
     }
 
     @Test
@@ -255,9 +256,9 @@ public class Test1 extends TestCase {
 
 
         sources.add("[A]를 0으로 초기화합니다");
-        sources.add("[A]가 10보다 작으면 반복합니다");
+        sources.add("[A]가 10보다 작거나 같으면 반복합니다");
         sources.add("[A]가 1에 2를 더한 것보다 크거나 같다면");
-        sources.add("\"ㅁㄴㅇㄹ[A]\"을 출력합니다");
+        sources.add("\"3보다 크다 [A]\"을 출력합니다");
         sources.add("그렇지 않으면");
         sources.add("음을 출력합니다");
         sources.add("조건문의 끝");
@@ -271,7 +272,6 @@ public class Test1 extends TestCase {
     public void test18() {
         List<String> sources = new ArrayList<>();
 
-
         sources.add("[A]를 1으로 초기화합니다");
         sources.add("[A]를 [A]에 1 더한 것으로 설정합니다");
         sources.add("[A]를 출력합니다");
@@ -279,9 +279,57 @@ public class Test1 extends TestCase {
         runCode(sources, false);
     }
 
+    @Test
+    public void test19() {
+        List<String> sources = new ArrayList<>();
+
+        sources.add("[A]를 1237776699898999의 각 자리수의 합계로 초기화합니다");
+        sources.add("[A]를 출력합니다");
+        sources.add("[B]를 123123의 자리수로 초기화합니다");
+        sources.add("\"123123은 [B]자리수 입니다\"를 출력합니다");
+
+        runCode(sources, false);
+    }
+
+    @Test
+    public void test20() {
+        List<String> sources = new ArrayList<>();
+
+        sources.add("[A]를 1과 2로 xy좌표를 만든 것으로 초기화합니다");
+        sources.add("[A]를 출력합니다");
+        sources.add("[A]의 x좌표를 3으로 설정합니다");
+        sources.add("[A]를 출력합니다");
+
+        runCode(sources, false);
+    }
+
+    @Test
+    public void test20_2() {
+        List<String> sources = Arrays.asList(
+                "[A]를 1과 2로 xy좌표를 만든 것으로 초기화합니다",
+                "[A]를 출력합니다",
+                "[A]의 x좌표를 3으로 설정합니다",
+                "[A]를 출력합니다"
+        );
+
+        runCode(sources, false);
+    }
+
+
+    @Test
+    public void test21() {
+        List<String> sources = Arrays.asList(
+                "1과 1이 같다는 것를 출력합니다",
+                "1과 1 같다는 것를 출력합니다",
+                "1 1 같다는 것를 출력합니다"
+        );
+
+        runCode(sources, false);
+    }
+
     /*
         IF문 또는 WHILE문이 안길 수 있는가?
-        예시) 만약 A가 B와 같다면을 출력합니다
+        예시) A가 B와 같다면을 출력합니다
         문법 자체로도 문제고 논리적으로 어색하기 때문에 컴파일 자체가 불가능하도록 해야 함
         IF문은 어찌어찌 조사를 이용해 고비를 넘겼으나, 반복문은 어려울 것으로 예상됨.
 
@@ -296,7 +344,11 @@ public class Test1 extends TestCase {
         Code code = new Code(sources);
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(debug);
-        codeProcessor.compile(new OriginalBackupParser(new GenitiveParser(new SentenceMultiDataParser(new PronounParser(new VariableConnectorParser(new SentenceLastParser(new SentencePastParser(new PredicateParser(new BoeoParser(new DefaultParser(null)))))))))),
+        codeProcessor.compile(
+                new OriginalBackupParser(new GenitiveParser(new SentenceMultiDataParser(
+                new PronounParser(new VariableConnectorParser(new SentenceLastParser(
+                        new SentencePastParser(new PredicateParser(new BoeoParser(
+                                new DefaultParser(null)))))))))),
                 null);
         if(perform)
             codeProcessor.perform(null);

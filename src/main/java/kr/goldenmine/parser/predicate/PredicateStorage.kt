@@ -28,6 +28,7 @@ class PredicateStorage private constructor() {
         addPredicate(Predicate더하다())
         addPredicate(Predicate빼다())
         addPredicate(Predicate곱하다())
+        addPredicate(Predicate만들다객체())
         addPredicate(Predicate나누다())
         addPredicate(Predicate같다())
         addPredicate(Predicate크다())

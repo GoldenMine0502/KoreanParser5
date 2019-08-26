@@ -2,7 +2,9 @@ package kr.goldenmine.parser.predicate
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.objects.defaults.ObjectNumber
+import kr.goldenmine.objects.objects.defaults.ObjectString
 import kr.goldenmine.parser.VariableStorage
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
@@ -13,6 +15,11 @@ open class Predicate설정하다 : IPredicate {
     override val optionalReplaceVariable: List<Boolean>
         get() = listOf()
 
+    override val neededSetters: List<Boolean>
+        get() = listOf(true, false)
+
+    override val optionalSetters: List<Boolean>
+        get() = listOf()
     override val defaultSentence: String
         get() = "설정하다"
 
@@ -38,9 +45,20 @@ open class Predicate설정하다 : IPredicate {
         val returnVariable = AtomicReference<Variable>()
 
         VariableStorage.setVariableAutomatically(local, variableNames, variableValues) { k, v, r ->
-            k.castCompelNoMaintain(v.mode)
-            k.set(v.get())
+            //println("${k.get()} ${v.get()} 설정됨")
+
+            val kValue = k.get()
+            val vValue = v.get()
+
+            if((kValue is ObjectNumber || kValue is ObjectString) && (vValue is ObjectNumber || vValue is ObjectString)) {
+                //println("${kValue} ${v.get()} 설정중")
+                kValue.setRoot(vValue.getRoot())
+            } else {
+                k.set(v.get())
+            }
             returnVariable.set(k)
+
+
         }
 
         //println(returnVariable.get().get())

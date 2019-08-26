@@ -2,7 +2,7 @@ package kr.goldenmine.parser.predicatespecific
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
-import kr.goldenmine.parser.Variable
+import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import kr.goldenmine.parser.predicate.IPredicate
 import kr.goldenmine.parser.predicate.PredicateStorage
@@ -11,6 +11,10 @@ import kr.co.shineware.nlp.komoran.model.KomoranResult
 import java.util.*
 
 class Predicate반복하다 : IPredicate, IPredicateSpecific {
+    override val neededSetters: List<Boolean>
+        get() = listOf()
+    override val optionalSetters: List<Boolean>
+        get() = listOf(false)
     override val neededReplaceVariable: List<Boolean>
         get() = listOf()
     override val optionalReplaceVariable: List<Boolean>
