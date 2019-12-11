@@ -3,13 +3,13 @@ package kr.goldenmine.parser.predicate
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
 import kr.goldenmine.objects.Variable
-import kr.goldenmine.objects.objects.defaults.*
+import kr.goldenmine.objects.objects.defaults.ObjectNumber
+import kr.goldenmine.objects.objects.defaults.ObjectString
 import kr.goldenmine.parser.VariableStorage
-import kr.goldenmine.parser.VariableStorage.Companion.setVariableAutomatically
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
-open class Predicate설정하다 : IPredicate {
+open class Predicate저장하다 : IPredicate {
     override val neededReplaceVariable: List<Boolean>
         get() = listOf(true, true)
     override val optionalReplaceVariable: List<Boolean>
@@ -21,10 +21,10 @@ open class Predicate설정하다 : IPredicate {
     override val optionalSetters: List<Boolean>
         get() = listOf()
     override val defaultSentence: String
-        get() = "설정하다"
+        get() = "저장하다"
 
     override val neededSentenceElements: List<String>
-        get() = listOf("목적어", "부사어로")
+        get() = listOf("부사어에", "목적어")
 
     override val optionalSentenceElements: List<String>
         get() = emptyList()
@@ -37,44 +37,25 @@ open class Predicate설정하다 : IPredicate {
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable {
 
-        val variableNames = sentence.map["목적어"]!!.variables!!
-        val variableValues = sentence.map["부사어로"]!!.variables!!
+        val variableNames = sentence.map["부사어에"]!!.variables!!
+        val variableValues = sentence.map["목적어"]!!.variables!!
 
         //println(variableNames)
 
         val returnVariable = AtomicReference<Variable>()
 
-        setVariableAutomatically(local, variableNames, variableValues) { k, v, r ->
+        VariableStorage.setVariableAutomatically(local, variableNames, variableValues) { k, v, r ->
             //println("${k.get()} ${v.get()} 설정됨")
 
-            //val kValue = k.get()
+            val kValue = k.get()
             val vValue = v.get()
 
-            //println("$kValue $vValue")
-
-
-            if(vValue is ObjectBoolean) {
-                k.set(ObjectBoolean(vValue.value))
+            if((kValue is ObjectNumber || kValue is ObjectString) && (vValue is ObjectNumber || vValue is ObjectString)) {
+                //println("${kValue} ${v.get()} 설정중")
+                kValue.setRoot(vValue.getRoot())
+            } else {
+                k.set(v.get())
             }
-
-            if(vValue is ObjectChar) {
-                k.set(ObjectChar(vValue.value))
-            }
-
-            if(vValue is ObjectInteger) {
-                k.set(ObjectInteger(vValue.value))
-            }
-
-            if(vValue is ObjectDouble) {
-                k.set(ObjectDouble(vValue.value))
-            }
-//
-//            if((kValue is ObjectNumber || kValue is ObjectString) && (vValue is ObjectNumber || vValue is ObjectString)) {
-//                println("${kValue} ${vValue} 설정중")
-//                kValue.setRoot(vValue.getRoot())
-//            } else {
-//                k.set(v.get())
-//            }
             returnVariable.set(k)
 
 

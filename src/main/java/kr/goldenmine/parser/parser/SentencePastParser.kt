@@ -10,7 +10,7 @@ class SentencePastParser(val parser: IParser?) : IParser {
         parser?.parse(code, parseContext, index, debug, metadata)
 
         if(debug)
-            println("executing SentencePastParser")
+            println("executing SentencePastParser ${parseContext.parsedMap}")
 
         val seo = parseContext.parsedMap["서술어"]
 
@@ -49,6 +49,10 @@ class SentencePastParser(val parser: IParser?) : IParser {
             //println("SentencePastParser: $list")
 
             parseContext.sentenceDepth.addAll(list)
+
+            if(debug)
+                println("SentencePastParser-Finish: ${parseContext.parsedMap}")
+
 
 
             /*

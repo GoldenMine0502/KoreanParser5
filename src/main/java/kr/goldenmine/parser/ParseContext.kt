@@ -5,10 +5,11 @@ import kr.co.shineware.nlp.komoran.core.Komoran
 import kr.goldenmine.parser.predicate.PredicateStorage
 import java.util.*
 
-class ParseContext(source: String) {
+class ParseContext(val line: Int, source: String) {
     var source: String = source
         private set
     val parsedMap = HashMap<String, MutableList<Context>>()
+
 
     //private IParser parser;
     val sentences: MutableList<Sentence> = ArrayList()

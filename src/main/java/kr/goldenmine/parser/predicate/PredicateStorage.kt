@@ -26,6 +26,7 @@ class PredicateStorage private constructor() {
         addPredicate(Predicate설정하다())
         addPredicate(Predicate초기화하다())
         addPredicate(Predicate더하다())
+        addPredicate(Predicate더하다2())
         addPredicate(Predicate빼다())
         addPredicate(Predicate곱하다())
         addPredicate(Predicate만들다객체())
@@ -36,6 +37,7 @@ class PredicateStorage private constructor() {
         addPredicate(Predicate멈추다())
         addPredicate(Predicate정지하다())
         addPredicate(Predicate제거하다())
+        addPredicate(Predicate저장하다())
 
         addPredicateSpecific(SpecificIF())
         addPredicateSpecific(IPredicateSpecificPostAND())

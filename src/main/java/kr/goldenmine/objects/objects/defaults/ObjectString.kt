@@ -4,12 +4,35 @@ import kr.goldenmine.impl.CompareException
 import kr.goldenmine.objects.KoreanObject
 
 class ObjectString(str: String) : KoreanObject {
+    override fun clone(): KoreanObject {
+        return ObjectString(str)
+    }
+
     override fun setValue(key: String, value: KoreanObject) {
 
     }
 
     override fun setValue(index: Int, value: KoreanObject) {
 
+    }
+
+    override fun add(other: KoreanObject): KoreanObject {
+        if (other is ObjectString) {
+            return ObjectString(StringBuilder(str).append(other.str).toString())
+        }
+        if (other is ObjectBoolean) {
+            return ObjectString(StringBuilder(str).append(other.value).toString())
+        }
+        if (other is ObjectInteger) {
+            return ObjectString(StringBuilder(str).append(other.value).toString())
+        }
+        if (other is ObjectDouble) {
+            return ObjectString(StringBuilder(str).append(other.value).toString())
+        }
+        if (other is ObjectChar) {
+            return ObjectString(StringBuilder(str).append(other.value).toString())
+        }
+        return super.add(other)
     }
 
     internal var str: String = str

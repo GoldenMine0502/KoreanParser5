@@ -13,6 +13,10 @@ TODO VariableMode를 이용해 기본형 여부를 체크하고, 강제캐스팅
  */
 
 open class Point2D(x: Double, y: Double) : KoreanObject {
+    override fun clone(): KoreanObject {
+        return Point2D(x.value, y.value)
+    }
+
     constructor() : this(0.0, 0.0)
 
     override fun toString(): String = "($x, $y)"

@@ -32,11 +32,13 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
             map.entries.forEach { it.setValue(ArrayList(it.value)) } // copy list
 
             if (predicateContexts != null) {
+                if(debug)
+                    println("SentenceLastParser-predicates: ${predicateContexts}")
                 for (predicatesIndex in predicateContexts.indices) {
                     val context = predicateContexts[predicatesIndex]
 
                     if (debug)
-                        println("executing SentenceLastParser-splitPredicateSource $map")
+                        println("executing SentenceLastParser-splitPredicateSource ${context.source} $map")
                     val predicatesSplited = splitPredicateSource2(context)
                     val predicatesSplitedSeo = predicatesSplited["서술어"]!![0]
                     val predicatesSplitedTemp = predicatesSplited["temp"]!!
@@ -61,6 +63,8 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
                         println("executing SentenceLastParser-getPredicateSubs")
                     if (predicates != null) {
                         try {
+                            if(debug)
+                                println("SentenceLastParser-start: $map")
                             predicate = predicates.stream().map {
                                 val copied = ArrayList(predicatesSplitedTemp)
                                 if (it.neededSentenceElements.size + it.optionalSentenceElements.size == 1) {
@@ -81,6 +85,8 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
                                 if (pair.second != null) {
                                     map.clear()
                                     map.putAll(map2)
+                                    if(debug)
+                                        println("SentenceLastParser-completed: ${it.defaultSentence} $map")
                                 }
                                 pair
                             }.filter { it!!.second != null }.findFirst().get()

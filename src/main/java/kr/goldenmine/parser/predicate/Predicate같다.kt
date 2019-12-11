@@ -43,10 +43,13 @@ class Predicate같다 : IPredicate {
         val 주어Var = 주어.variables!!
         val main = 주어Var[0]
 
-        //println("main: $main $주어Var ${보어!!.variables!!}")
+        //println("같다: $주어 // $보어")
 
+        //println("main: $main $주어Var")
+        //println(" ${보어!!.variables!!}")
         for(i in 1 until 주어Var.size) {
             //println("sub: ${주어Var[i]}")
+
             if(!main!!.equals(주어Var[i])) {
                 return Variable(false, false)
             }

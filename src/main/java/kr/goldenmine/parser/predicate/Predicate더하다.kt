@@ -54,7 +54,7 @@ class Predicate더하다 : IPredicate {
                 VariableMode.BOOLEAN_MODE -> throw RuntimeException("Boolean은 더할 수 없습니다.")
                 VariableMode.INT_MODE -> k.set(k.intValue() + v.intValue())
                 VariableMode.REALNUM_MODE -> k.set(k.realNumValue() + v.realNumValue())
-                VariableMode.STRING_MODE -> k.set(k.stringValue()!! + v.stringValue()!!)
+                VariableMode.STRING_MODE -> k.set(k.stringValue() + v.stringValue())
             }
             returnVariable.set(k)
         }
@@ -65,6 +65,10 @@ class Predicate더하다 : IPredicate {
     }
 
     override fun isAccord(contexts: HashMap<String, Context>, metadata: List<Any>?): Boolean {
-        return true
+        if(contexts.containsKey("부사어에")) {
+            return true
+        } else {
+            return false
+        }
     }
 }

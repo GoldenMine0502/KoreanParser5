@@ -1,5 +1,6 @@
 package kr.goldenmine.parser
 
+import kr.goldenmine.impl.CompileException
 import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.objects.Variable
 import kr.goldenmine.objects.VariableMode
@@ -37,18 +38,24 @@ class CodeProcessor(
 
         val sourceCode = code.sourceCode
         for (line in sourceCode.indices) {
-            parser.parse(code, sourceCode[line], line, debug, metadata)
-            if (debug) {
-                println("compiled line " + line + ": " + sourceCode[line].parsedMap + ", " + sourceCode[line].isNoParse)
-                sourceCode[line].sentences.forEach {
-                    println(" (sentence) noparse: ${sourceCode[line].isNoParse} has multiprocess: ${it.multiProcessData != null} map: ${it.map} predicate: ${it.서술어.defaultSentence}")
-                }
+            try {
+                parser.parse(code, sourceCode[line], line, debug, metadata)
+                if (debug) {
+                    println("compiled line " + line + ": " + sourceCode[line].parsedMap + ", " + sourceCode[line].isNoParse)
+                    sourceCode[line].sentences.forEach {
+                        println(" (sentence) noparse: ${sourceCode[line].isNoParse} multiprocess: ${it.multiProcessData} map: ${it.map} predicate: ${it.서술어.defaultSentence}")
+                    }
 
-                println("\n\n\n\n\n")
+                    println("\n\n\n\n\n")
 
 //                sourceCode[line].sentences.forEach {
 //                    println("${it.서술어.defaultSentence}, ${it.map}")
 //                }
+                }
+            } catch (ex: Exception) {
+                println("${sourceCode[line].line} 번에서 컴파일 에러")
+                ex.printStackTrace()
+                throw CompileException("강제 종료됨")
             }
         }
 
@@ -99,10 +106,19 @@ class CodeProcessor(
 
                     for (sentenceIndex in sentences.indices) {
                         val sentence = sentences[sentenceIndex]
+
+                        // result: 20ms
+//                        print("apply variable ")
+//                        printTime(100000) {
                         applyVariable(sentence, LOCAL)
+//                        }
 
                         //val result = sentence.서술어.perform(sentence, LOCAL)
                         var pronoun: PronounInfo? = null
+
+                        // result: 0ms
+//                        print("sentence parse ")
+//                        printTime(100000) {
                         //System.out.println(performIndex + ": " + sentence.get서술어().getDefaultSentence() + ": " + ((result != null) ? result.get() : "null"));
                         //println(performIndex.toString() + ": " + sentence.서술어.defaultSentence + ": " + if (result != null) result.get() else "null")
                         if (pronounInfoIndex < pronounInfoList.size) {
@@ -115,15 +131,59 @@ class CodeProcessor(
                                 pronounInfoIndex++
                             }
                         }
+//                        }
+
 
                         val result: Variable?
 
+                        // TODO 비어있는 문장성분이 있으면 이전의 변수값으로 대체
+
+                        /*
+                            TODO 해당하는 문장에 문장성분이 부족한지 확인
+                            TODO 부족한 경우 대체
+                            TODO
+                            TODO
+
+                            A에 1을 더해 A에 저장합니다
+
+                         */
+
+                        // 15ms
+//                        printTime(100000) {
+                        if (sentence.uncompleted != null) {
+                            if (debug)
+                                println("부족한 문장성분: ${sentence.uncompleted}")
+                            val lastSentence = sentences[sentenceIndex - 1]
+                            val lastVar = variableReturns[variableReturns.size - 1]
+
+                            if (lastVar != null) {
+                                val context = Context("temp", false, lastSentence.startPos, lastSentence.finishPos)
+                                context.variables = mutableListOf(lastVar)
+
+                                if (debug)
+                                    println("${sentence.uncompleted} 부족, $lastVar 추가")
+
+                                sentence.map[sentence.uncompleted] = context
+                            }
+                        }
+//                        }
+
                         if (pronoun != null) {
-                            result = pronoun.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
-                            pronoun.context.variables!![pronoun.variableIndex] = result
+                            result = pronoun!!.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
+                            pronoun!!.context.variables!![pronoun!!.variableIndex] = result
                         } else {
+//                            val x = printTime(100000) { sentence.서술어.perform(sentence, metadata, LOCAL) }
+//                            if (x > 5) {
+//                                println(sentence.서술어.defaultSentence)
+//                            }
                             result = sentence.서술어.perform(sentence, metadata, LOCAL)
                         }
+
+                        if (sentence.uncompleted != null) {
+                            sentence.map.remove(sentence.uncompleted)
+                        }
+
+                        // 여기에서 임시로 추가했던 문장성분은 제거
 
 
                         variableReturns.add(result)
@@ -150,6 +210,8 @@ class CodeProcessor(
 
 
                     // 바뀐 값들 원래대로 되돌려놓음
+//                    print("new context ")
+//                    printTime(100000) {
                     sentences.forEach {
                         it.map.forEach { (t, u) ->
                             val originalList = it.originalMap[t]!!.variables!!
@@ -159,6 +221,7 @@ class CodeProcessor(
                             it.map[t]!!.variables = newList
                         }
                     }
+//                    }
 
 
                     //                    Sentence lastSentence = sentences.get(sentences.size() - 1);
@@ -189,7 +252,7 @@ class CodeProcessor(
 
                 }
             } catch (ex: Exception) {
-                println("line " + performIndex + "에서 에러발생")
+                println("${sourceCode[performIndex].line}번에서 에러발생")
                 ex.printStackTrace()
                 break
             }
@@ -213,84 +276,86 @@ class CodeProcessor(
             val context = map[key]
             if (context != null) {
                 val variables = context.variables!!
-                val variableGenitives = context.genitiveList!!
+                val variableGenitives = context.genitiveList
 
                 for (variableIndex in variables.indices) {
                     val variable = variables[variableIndex]
 
                     if (variable != null && replaceable[key]!!) {
-                        val genitives = variableGenitives[variableIndex]
+                        if (variableGenitives != null) {
+                            val genitives = variableGenitives[variableIndex]
 
-                        if (genitives != null) {
-                            var currentIndex = 0
+                            if (genitives != null) {
+                                var currentIndex = 0
 
-                            var result: KoreanObject = genitives[0].get()
+                                var result: KoreanObject = genitives[0].get()
 
-                            if(result is ObjectString && VariableStorage.isVariable(result.getRoot() as String)) {
-                                val value = result.getRoot() as String
-                                val valueCut = value.substring(1, value.length - 1)
-                                if (storage.hasVariable(valueCut)) {
-                                    result = storage.getVariable(valueCut)!!.get()
-                                } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
-                                    result = VariableStorage.GLOBAL.getVariable(valueCut)!!.get()
-                                } else {
-                                    val variable = Variable(0, false)
-                                    result = variable.get()
-                                    storage.setVariable(valueCut, variable)
-                                }
-                            }
-
-                            if(debug)
-                                println("result: $result")
-
-                            while (currentIndex < genitives.size - 1) {
-                                val next = genitives[currentIndex + 1]
-
-                                val tempResult = result.getValue(next.get().toString())
-                                if(tempResult != null) {
-                                    result = tempResult
-                                } else {
-                                    throw RuntimeException("속성 ${next.get()}이(가) 존재하지 않습니다.")
-                                }
-                                currentIndex++
-                            }
-
-                            if (debug) {
-                                println("genitiveResult: $result")
-                            }
-
-                            variable.set(result)
-                        } else if (variable.mode == VariableMode.STRING_MODE) {
-                            val value = variable.stringValue()
-
-                            if (VariableStorage.isVariable(value)) {
-                                //println(value)
-                                val sb = StringBuilder(value.substring(1, value.length - 1))
-                                processVariable(sb, 0, false, storage)
-                                val valueCut = sb.toString()
-                                //println(valueCut)
-
-                                val variableTemp: Variable?
-
-                                if (storage.hasVariable(valueCut)) {
-                                    variableTemp = storage.getVariable(valueCut)
-                                } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
-                                    variableTemp = VariableStorage.GLOBAL.getVariable(valueCut)
-                                } else {
-                                    variableTemp = Variable(0, false)
-                                    storage.setVariable(valueCut, variableTemp)
+                                if (result is ObjectString && VariableStorage.isVariable(result.getRoot() as String)) {
+                                    val value = result.getRoot() as String
+                                    val valueCut = value.substring(1, value.length - 1)
+                                    if (storage.hasVariable(valueCut)) {
+                                        result = storage.getVariable(valueCut)!!.get()
+                                    } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
+                                        result = VariableStorage.GLOBAL.getVariable(valueCut)!!.get()
+                                    } else {
+                                        val variable = Variable(0, false)
+                                        result = variable.get()
+                                        storage.setVariable(valueCut, variable)
+                                    }
                                 }
 
-                                if (variableTemp != null) {
-                                    variables[variableIndex] = variableTemp
-                                } else {
-                                    throw ConcurrentModificationException(valueCut + "에 대한 변수 값이 초기화되지 않았습니다. (thread safety 문제) ")
+                                if (debug)
+                                    println("result: $result")
+
+                                while (currentIndex < genitives.size - 1) {
+                                    val next = genitives[currentIndex + 1]
+
+                                    val tempResult = result.getValue(next.get().toString())
+                                    if (tempResult != null) {
+                                        result = tempResult
+                                    } else {
+                                        throw RuntimeException("속성 ${next.get()}이(가) 존재하지 않습니다.")
+                                    }
+                                    currentIndex++
                                 }
-                            } else {
-                                val sb = StringBuilder(value)
-                                processVariable(sb, 0, false, storage)
-                                //variable.castCompelNoMaintain(Variable.VariableMode.STRING_MODE)
-                                variable.set(sb.toString())
+
+                                if (debug) {
+                                    println("genitiveResult: $result")
+                                }
+
+                                variable.set(result)
+                            } else if (variable.mode == VariableMode.STRING_MODE) {
+                                val value = variable.stringValue()
+
+                                if (VariableStorage.isVariable(value)) {
+                                    //println(value)
+                                    val sb = StringBuilder(value.substring(1, value.length - 1))
+                                    processVariable(sb, 0, false, storage)
+                                    val valueCut = sb.toString()
+                                    //println(valueCut)
+
+                                    val variableTemp: Variable?
+
+                                    if (storage.hasVariable(valueCut)) {
+                                        variableTemp = storage.getVariable(valueCut)
+                                    } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
+                                        variableTemp = VariableStorage.GLOBAL.getVariable(valueCut)
+                                    } else {
+                                        variableTemp = Variable(0, false)
+                                        storage.setVariable(valueCut, variableTemp)
+                                    }
+
+                                    if (variableTemp != null) {
+                                        variables[variableIndex] = variableTemp
+                                    } else {
+                                        throw ConcurrentModificationException(valueCut + "에 대한 변수 값이 초기화되지 않았습니다. (thread safety 문제) ")
+                                    }
+                                } else {
+                                    val sb = StringBuilder(value)
+                                    processVariable(sb, 0, false, storage)
+                                    //variable.castCompelNoMaintain(Variable.VariableMode.STRING_MODE)
+                                    variable.set(sb.toString())
+                                }
                             }
                         }
                     }
@@ -334,4 +399,12 @@ class CodeProcessor(
             return pos
         }
     }
+}
+
+fun printTime(loop: Int, lambda: () -> Unit): Long {
+    val time = System.currentTimeMillis()
+    for (i in 1..loop)
+        lambda.invoke()
+
+    return System.currentTimeMillis() - time
 }

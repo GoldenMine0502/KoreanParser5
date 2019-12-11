@@ -17,6 +17,8 @@ class DefaultParser(private val childParser: IParser?) : IParser {
             격조사리스트.addAll(JosaStorage.INSTANCE.getJosaList(JosaCommunity.보조사))
 
             parseContext.parsedMap.putAll(defaultParse(source, 격조사리스트, false, null))
+            if(debug)
+                println("DefaultParser: ${parseContext.parsedMap}")
             //println(parseContext.parsedMap)
             //System.out.println(parseContext.getParsedMap());
         }

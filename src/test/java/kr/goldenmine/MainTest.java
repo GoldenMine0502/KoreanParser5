@@ -1,5 +1,8 @@
 package kr.goldenmine;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import junit.framework.TestCase;
 import kr.goldenmine.parser.Code;
@@ -10,7 +13,7 @@ import java.util.List;
 import kr.goldenmine.parser.parser.disabled.BoeoParser;
 import org.testng.annotations.Test;
 
-public class Test1 extends TestCase {
+public class MainTest extends TestCase {
 
     @Test
     public void test() {
@@ -290,6 +293,19 @@ public class Test1 extends TestCase {
 
         runCode(sources, false);
     }
+    @Test
+    public void test19_2() {
+        List<String> sources = new ArrayList<>();
+
+        for(int i = 0; i < 10000; i++)
+            sources.add("[A]를 1237776699898999의 각 자리수의 합계로 초기화합니다");
+        sources.add("[A]를 출력합니다");
+        sources.add("[B]를 123123의 자리수로 초기화합니다");
+        sources.add("\"123123은 [B]자리수 입니다\"를 출력합니다");
+
+        runCode(sources, false);
+    }
+
 
     @Test
     public void test20() {
@@ -321,10 +337,95 @@ public class Test1 extends TestCase {
         List<String> sources = Arrays.asList(
                 "1과 1이 같다는 것를 출력합니다",
                 "1과 1 같다는 것를 출력합니다",
-                "1 1 같다는 것를 출력합니다"
+                "1 1 같다는 것를 출력합니다",
+                "1 2 같다는 것를 출력합니다"
         );
 
         runCode(sources, false);
+    }
+
+    @Test
+    public void test22() {
+        List<String> sources = Arrays.asList(
+                "[A]를 2으로 설정합니다",
+                "[A]에 1을 더해 [A]에 저장합니다",
+                "[A]를 출력합니다"
+        );
+
+        runCode(sources, true);
+    }
+
+    @Test
+    public void test23() {
+        List<String> sources = Arrays.asList(
+                "[A]를 2으로 설정합니다",
+                "[A]에 1을 더해 [A]에 저장합니다",
+                "[A]가 4과 같다면",
+                "[A]를 출력합니다",
+                "그렇지 않으면",
+                "zz를 출력합니다",
+                "조건문의 끝"
+        );
+
+        runCode(sources, false);
+    }
+
+    @Test
+    public void test24() {
+        List<String> sources = Arrays.asList(
+                "[A]를 3으로 설정합니다",
+                "[A]를 2로 나눈 나머지가 0과 같다면",
+                "[A]를 출력합니다",
+                "그렇지 않으면",
+                "zz를 출력합니다",
+                "조건문의 끝"
+        );
+
+        runCode(sources, true);
+    }
+
+
+    @Test
+    public void test25() {
+        List<String> sources = Arrays.asList(
+                "[A]를 true로 설정합니다",
+                "[A]를 출력합니다"
+        );
+
+        runCode(sources, true);
+    }
+
+    @Test
+    public void test26() {
+
+        List<String> sources = Arrays.asList(
+                "test를 출력합니다"
+        );
+
+        runCode(sources, true, true);
+    }
+
+    // [A]가 [B]라면
+
+    @Test
+    public void testFromFile() {
+        try {
+            //TO/DO n중 반복문 처리
+
+            List<String> sources = new ArrayList<>();
+            File file = new File("testfile.txt");
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+
+            BufferedReader r = new BufferedReader(new FileReader(file));
+            r.lines().forEach(sources::add);
+            r.close();
+
+            runCode(sources, false);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /*
@@ -345,11 +446,17 @@ public class Test1 extends TestCase {
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(debug);
         codeProcessor.compile(
-                new OriginalBackupParser(new GenitiveParser(new SentenceMultiDataParser(
+                new OriginalBackupParser(new GenitiveParser(//new SentenceMultiDataParser(
                 new PronounParser(new VariableConnectorParser(new SentenceLastParser(
-                        new SentencePastParser(new PredicateParser(new BoeoParser(
-                                new DefaultParser(null)))))))))),
-                null);
+                        new SentencePastParser(//new BoeoParser(
+                                new DefaultParser(null)))))))//))
+                , null);
+        codeProcessor.compile(new SentenceMultiDataParser(null), null);
+        try {
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(perform)
             codeProcessor.perform(null);
     }

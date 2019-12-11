@@ -15,10 +15,26 @@ import java.util.stream.Stream
 
 // TODO 모든 코드 최적화 요망
 
+val connectables = hashSetOf("거나", "고", "이고")
+
 fun parsedMapToIndices(parseContext: ParseContext): MutableList<Pair<Context, String>> {
     val indices = ArrayList<Pair<Context, String>>()
 
     parseContext.parsedMap.forEach { (t, u) ->
+        u.forEach {
+            indices.add(Pair(it, t))
+        }
+    }
+
+    indices.sortWith(Comparator { it, it2 -> it.first.posStart.compareTo(it2.first.posStart) })
+
+    return indices
+}
+
+fun mapListToIndices(map: HashMap<String, MutableList<Context>>): MutableList<Pair<Context, String>> {
+    val indices = ArrayList<Pair<Context, String>>()
+
+    map.forEach { (t, u) ->
         u.forEach {
             indices.add(Pair(it, t))
         }
@@ -95,13 +111,19 @@ fun findNears(elements: List<String>, elementConditions: List<ValueScope>, map: 
     if(debug)
         println("sentenceParserUtil(${if(!selectable) "ned" else "sel"}): before $predicateContextIndex $elements $elementConditions ${types.size} $predicateSplited")
 
+    //list.removeAt(predicateContextIndex)
+
     for(index in predicateContextIndex-1 downTo 0) {
         if(types.size - predicateSplited.size == 0) break
 
         val pair = list[index]
 
         if(debug)
-            println("SentenceParserUtil: $pair")
+            println("SentenceParserUtil: $pair continued: ${map.containsKey(pair.second)} ${map[pair.second]!!.contains(pair.first)}")
+        if(!map.containsKey(pair.second) || !map[pair.second]!!.contains(pair.first)) {
+            continue
+        }
+
 
         if((types.contains(pair.second)) && (map.containsKey(pair.second) && map[pair.second]!!.contains(pair.first))) {
             map[pair.second]!!.remove(pair.first)
@@ -111,6 +133,8 @@ fun findNears(elements: List<String>, elementConditions: List<ValueScope>, map: 
             list.removeAt(index)
             subMap[pair.second] = pair.first
         } else if(pair.second == "서술어") {
+            if(debug)
+                println("SentenceParserUtil: breaking")
             if(selectable)
                 break
         }
@@ -191,6 +215,8 @@ fun getPredicateSubs(parseContext: ParseContext, map: HashMap<String, MutableLis
 
     val currentDepth = map["서술어"]!!.indexOf(predicateContext)
 
+    /* 기본 파싱 */
+
     subMap.putAll(findNears(neededs, neededConditions, map, currentDepth, subMap, toAddMap, findPosLinear(Pair(predicateContext, ""), parsedMapToIndices), predicateSplited, parsedMapToIndices, false, debug))
     val count = subMap.size
 
@@ -199,8 +225,10 @@ fun getPredicateSubs(parseContext: ParseContext, map: HashMap<String, MutableLis
 
     // 그냥 neededs의 인덱스대로가 아니라 가까운 것부터 찾아야 하고 인덱스대로는 서술어 subs에 대해서만 인덱스를 적용시켜야 함
 
+    /* 접속사 관련 파싱 */
+
     /*  TODO 접속사 파싱(생략된 문장)
-    TODO 만약 채워지지 못한 문장성분이 있는 경우 바로 앞 문장에서 카피해옴 - ㄱ
+    TODO 만약 채워지지 못한 문장성분이 있는 경우 + AND 또는 OR인경우 바로 앞 문장에서 카피해옴 - ㄱ
     TODO 채워지지 못한 문장성분중 같은 문장성분이 있으면 카피 - ㄴ
     TODO 같은 문장성분이 없으면 남은 문장성분중 "대충" 끌어옴 - ㄷ
     A가 B보다 크거나 같으면
@@ -214,61 +242,74 @@ fun getPredicateSubs(parseContext: ParseContext, map: HashMap<String, MutableLis
 
         val addSet = HashSet<String>()
 
-        val sentence = parseContext.sentences[parseContext.sentences.size - 1]
+        var last:String? = null
 
-        val sentenceToIndices = mapToIndices(sentence.map)
+        if(parseContext.sentences.size >= 1) {
+            val type = parseContext.parsedMap["서술어"]!![parseContext.sentences.size - 1]
 
-        additionals.forEach {// TODO ㄴ
-            if(it != "서술어") {
-                if(sentence.map.containsKey(it)) {
-                    val context = sentence.map[it]!!
-
-                    addSet.add(it)
-                    subMap[it] = context
-                }
-            }
+            val prediateList = ParseContext.komoran.analyze(type.source).list
+            last = prediateList[prediateList.size - 1].first
         }
 
-        selectables.forEach {
-            if(it != "서술어") {
-                if(sentence.map.containsKey(it)) {
-                    val context = sentence.map[it]!!
+        if(last != null && connectables.contains(last)) {
+            val sentence = parseContext.sentences[parseContext.sentences.size - 1]
 
-                    addSet.add(it)
-                    subMap[it] = context
+            val sentenceToIndices = mapToIndices(sentence.map)
+
+            additionals.forEach {// TODO ㄴ
+                if(it != "서술어") {
+                    if(sentence.map.containsKey(it)) {
+                        val context = sentence.map[it]!!
+
+                        addSet.add(it)
+                        subMap[it] = context
+                    }
                 }
             }
-        }
 
-        additionals.removeIf { addSet.contains(it) }
-        selectables.removeIf { addSet.contains(it) }
+            selectables.forEach {
+                if(it != "서술어") {
+                    if(sentence.map.containsKey(it)) {
+                        val context = sentence.map[it]!!
 
-
-        sentenceToIndices.forEach {// TODO ㄷ
-            val nedcon = additionals.contains(it.second)
-            val selcon = selectables.contains(it.second)
-            if(addSet.size >= neededs.size + selectables.size)
-                return@forEach
-
-            if(it.second != "서술어" && !addSet.contains(it.second)) {
-                if(debug)
-                    println("SentenceParserUtil-subsequent: ${it.first} ${it.second} ${additionals.size} ${selectables.size}")
-                addSet.add(it.second)
-                if(additionals.size > 0) {
-                    subMap[additionals.removeAt(0)] = it.first
-                } else if(selectables.size > 0) {
-                    subMap[selectables.removeAt(0)] = it.first
+                        addSet.add(it)
+                        subMap[it] = context
+                    }
                 }
             }
+
+            additionals.removeIf { addSet.contains(it) }
+            selectables.removeIf { addSet.contains(it) }
+
+
+            sentenceToIndices.forEach {// TODO ㄷ
+                val nedcon = additionals.contains(it.second)
+                val selcon = selectables.contains(it.second)
+                if(addSet.size >= neededs.size + selectables.size)
+                    return@forEach
+
+                if(it.second != "서술어" && !addSet.contains(it.second)) {
+                    if(debug)
+                        println("SentenceParserUtil-subsequent: ${it.first} ${it.second} ${additionals.size} ${selectables.size}")
+                    addSet.add(it.second)
+                    if(additionals.size > 0) {
+                        subMap[additionals.removeAt(0)] = it.first
+                    } else if(selectables.size > 0) {
+                        subMap[selectables.removeAt(0)] = it.first
+                    }
+                }
 //            if(additionals.size == addSet.size) {
 //                return@forEach
 //            }
+            }
         }
     }
 
-    if(count2 - count < selectables.size) {
+//    if(count2 - count < selectables.size) {
+//
+//    }
 
-    }
+    /* 이전 서술어 값으로 치환 */
 
 //    for (neededsIndex in neededs.indices) {
 //        val needed = neededs[neededsIndex]
@@ -450,7 +491,7 @@ fun splitPredicateSource2(srcContext: Context): HashMap<String, MutableList<Cont
         }
         if (ch == ' ') {
             if (noParse == 0) {
-                val element = Context(buffer.toString(), false, start + index - buffer.length + list.size, start + index + list.size)
+                val element = Context(buffer.toString(), false, start + index + list.size, start + index + list.size + buffer.length)
 
                 //println("$index ${source.length}")
 

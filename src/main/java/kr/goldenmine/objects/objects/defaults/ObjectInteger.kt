@@ -1,5 +1,6 @@
 package kr.goldenmine.objects.objects.defaults
 
+import kr.goldenmine.impl.CalculateException
 import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.impl.CompareException
 import kr.goldenmine.objects.objects.arrays.ObjectIntArray
@@ -11,7 +12,84 @@ class ObjectInteger(value: Long) : ObjectNumber() {
 
     var value = value
 
+    override fun clone(): KoreanObject {
+        return ObjectInteger(value)
+    }
+
     override fun toString(): String = value.toString()// + " / " + super.toString()
+
+    override fun add(other: KoreanObject): KoreanObject {
+        if(other is ObjectChar) {
+            return ObjectInteger((value.toInt() + other.value.toInt()))
+        }
+        if(other is ObjectInteger) {
+            return ObjectInteger((value.toInt() + other.value))
+        }
+        if(other is ObjectDouble) {
+            return ObjectDouble((value.toDouble() + other.value))
+        }
+        if (other is ObjectString) {
+            return ObjectString(StringBuilder(value.toString()).append(other.str).toString())
+        }
+        throw CalculateException("정수와 더할 수 없는 값입니다.")
+    }
+
+    override fun sub(other: KoreanObject): KoreanObject {
+        if(other is ObjectChar) {
+            return ObjectInteger((value.toInt() - other.value.toInt()))
+        }
+        if(other is ObjectInteger) {
+            return ObjectInteger((value.toInt() - other.value))
+        }
+        if(other is ObjectDouble) {
+            return ObjectDouble((value.toDouble() - other.value))
+        }
+        throw CalculateException("정수와 뺄 수 없는 값입니다.")
+    }
+
+    override fun mul(other: KoreanObject): KoreanObject {
+        if(other is ObjectChar) {
+            return ObjectInteger((value.toInt() * other.value.toInt()))
+        }
+        if(other is ObjectInteger) {
+            return ObjectInteger((value.toInt() * other.value))
+        }
+        if(other is ObjectDouble) {
+            return ObjectDouble((value.toDouble() * other.value))
+        }
+        throw CalculateException("정수와 곱할 수 없는 값입니다.")
+    }
+
+    override fun div(other: KoreanObject): KoreanObject {
+        if(other is ObjectChar) {
+            val first = value
+            val second = other.value.toLong()
+            return if(first % second == 0L) { ObjectInteger((first / second)) } else { ObjectDouble((first.toDouble() / second.toDouble())) }
+        }
+        if(other is ObjectInteger) {
+            val first = value
+            val second = other.value
+            return if(first % second == 0L) { ObjectInteger((first / second)) } else { ObjectDouble((first.toDouble() / second.toDouble())) }
+        }
+        if(other is ObjectDouble) {
+            return ObjectDouble(value.toDouble() / other.value)
+        }
+
+        throw CalculateException("정수와 나눌 수 없는 값입니다.")
+    }
+
+    override fun mod(other: KoreanObject): KoreanObject {
+        if(other is ObjectChar) {
+            return ObjectChar((value.toLong() % other.value.toLong()).toChar())
+        }
+        if(other is ObjectInteger) {
+            return ObjectInteger(value.toLong() % other.value)
+        }
+        if(other is ObjectDouble) {
+            return ObjectDouble(value.toDouble() % other.value)
+        }
+        return super.mod(other)
+    }
 
     override fun setRoot(value: Any) {
         if(value is ObjectChar) {

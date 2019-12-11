@@ -5,6 +5,10 @@ import kr.goldenmine.impl.ObjectException
 import kr.goldenmine.objects.KoreanObject
 
 class DefaultObject : KoreanObject {
+    override fun clone(): KoreanObject {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun toString(): String = ""
     override fun getRoot(): Any {
         throw ObjectException("객체에는 root가 존재하지 않습니다.")

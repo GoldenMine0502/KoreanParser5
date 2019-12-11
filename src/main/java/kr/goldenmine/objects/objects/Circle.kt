@@ -6,6 +6,10 @@ import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.objects.objects.defaults.ObjectDouble
 
 open class Circle(var point2D: Point2D, radius: Double) : KoreanObject {
+    override fun clone(): KoreanObject {
+        return Circle(Point2D(point2D.x.value, point2D.y.value), radius.value)
+    }
+
     override fun toString(): String = "$point2D, 반지름: $radius"
 
     var radius = ObjectDouble(radius)

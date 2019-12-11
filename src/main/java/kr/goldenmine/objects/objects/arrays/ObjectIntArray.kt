@@ -6,6 +6,15 @@ import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.objects.objects.defaults.ObjectInteger
 
 class ObjectIntArray : ObjectArray() {
+    override fun clone(): KoreanObject {
+        val x = ObjectIntArray()
+        x.array = arrayOfNulls(array!!.size)
+        for(i in array!!.indices) {
+            x.array!![i] = array!![i]!!.clone() as ObjectInteger
+        }
+
+        return x
+    }
 
     var array: Array<ObjectInteger?>? = null
 

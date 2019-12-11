@@ -9,7 +9,8 @@ class Code(sources: List<String>) {
         sourceCode = ArrayList()
 
         for (i in sources.indices) {
-            sourceCode.add(ParseContext(sources[i]))
+            if(sources[i].isNotEmpty())
+                sourceCode.add(ParseContext(i + 1, sources[i]))
         }
     }
 }
