@@ -429,12 +429,12 @@ public class MainTest extends TestCase {
     }
 
     /*
-        IF문 또는 WHILE문이 안길 수 있는가?
+        IF문 또는 WHILE문이 안길 수 있는지?
         예시) A가 B와 같다면을 출력합니다
         문법 자체로도 문제고 논리적으로 어색하기 때문에 컴파일 자체가 불가능하도록 해야 함
-        IF문은 어찌어찌 조사를 이용해 고비를 넘겼으나, 반복문은 어려울 것으로 예상됨.
+        IF문은 어찌어찌 조사를 이용해 고비를 넘겼으나, 반복문은 어려울 것으로 예상
 
-        Predicate마다 필요한 조각조각을 인터페이스화시켜 이를 구분할 방법이 없을까
+        Predicate마다 필요한 조각조각을 인터페이스화시켜 이를 구분할 방법?
      */
 
     public void runCode(List<String> sources, boolean debug) {
@@ -446,10 +446,20 @@ public class MainTest extends TestCase {
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(debug);
         codeProcessor.compile(
-                new OriginalBackupParser(new GenitiveParser(//new SentenceMultiDataParser(
-                new PronounParser(new VariableConnectorParser(new SentenceLastParser(
-                        new SentencePastParser(//new BoeoParser(
-                                new DefaultParser(null)))))))//))
+                new OriginalBackupParser(
+                        new GenitiveParser(//new SentenceMultiDataParser(
+                            new PronounParser(
+                                    new VariableConnectorParser(
+                                            new SentenceLastParser(
+                                                new SentencePastParser(//new BoeoParser(
+                                                    new DefaultParser(null)
+                                                )
+                                            )
+                                    )
+                            )
+                        )
+                )
+                //))
                 , null);
         codeProcessor.compile(new SentenceMultiDataParser(null), null);
         try {

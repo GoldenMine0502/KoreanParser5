@@ -5,11 +5,13 @@ import kr.goldenmine.parser.Code
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
 import kr.goldenmine.parser.Sentence
+import kr.goldenmine.parser.parser.util.concatContexts
+import kr.goldenmine.parser.parser.util.getPredicateSubs
+import kr.goldenmine.parser.parser.util.splitPredicateSource2
 import kr.goldenmine.parser.predicate.IPredicate
 import kr.goldenmine.parser.predicate.PredicateStorage
 import kr.goldenmine.parser.predicatespecific.IPredicateSpecific
 import java.util.*
-import java.util.stream.Collectors
 
 class SentenceLastParser(private val parser: IParser?) : IParser {
     //https://blog.woniper.net/239 창 여러개 띄우기
@@ -61,6 +63,7 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
 
                     if (debug)
                         println("executing SentenceLastParser-getPredicateSubs")
+
                     if (predicates != null) {
                         try {
                             if(debug)

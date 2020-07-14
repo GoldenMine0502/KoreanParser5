@@ -1,9 +1,10 @@
-package kr.goldenmine.parser.parser
+package kr.goldenmine.parser.parser.util
 
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
-import kr.goldenmine.parser.Sentence
 import kr.goldenmine.parser.parseVariable
+import kr.goldenmine.parser.parser.IParser
+import kr.goldenmine.parser.parser.defaultParse
 import kr.goldenmine.parser.postposition.JosaCommunity
 import kr.goldenmine.parser.postposition.JosaStorage
 import kr.goldenmine.parser.predicate.IPredicate
@@ -434,14 +435,14 @@ fun concatContexts(list: List<Context>): Context? {
 
 
 
-val predicateVerify = IParser.PostPositionVerify(JosaStorage.INSTANCE.getJosaList(JosaCommunity.격조사).asSequence().filter { it.type == "서술어"}.first(), 0)
+val predicateVerify = IParser.PostPositionVerify(JosaStorage.getJosaList(JosaCommunity.격조사).asSequence().filter { it.type == "서술어" }.first(), 0)
 
 fun splitPredicateSource2(srcContext: Context): HashMap<String, MutableList<Context>> {
     val map = HashMap<String, MutableList<Context>>()
     val start = srcContext.posStart
 
     var source = srcContext.source
-    val result = defaultParse(source, JosaStorage.INSTANCE.getJosaList(JosaCommunity.접속조사), true, predicateVerify)
+    val result = defaultParse(source, JosaStorage.getJosaList(JosaCommunity.접속조사), true, predicateVerify)
     val boeo = result["접속조사"]
     if(boeo != null) {
         var sum = 0

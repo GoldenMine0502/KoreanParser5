@@ -1,8 +1,9 @@
 package kr.goldenmine.parser.parser
 
 import kr.goldenmine.parser.Code
-import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.ParseContext
+import kr.goldenmine.parser.parser.util.parseVariableAndConnector
+import kr.goldenmine.parser.parser.util.parsedMapToIndices
 import kr.goldenmine.parser.pronoun.PronounStorage
 
 class SentencePastParser(val parser: IParser?) : IParser {

@@ -17,7 +17,7 @@ class BoeoParser(private val parser: IParser?) : IParser {
 
     init {
 
-        val list = JosaStorage.INSTANCE.getJosaList(JosaCommunity.격조사)
+        val list = JosaStorage.getJosaList(JosaCommunity.격조사)
         for (postPosition in list) {
             if (postPosition.type == "서술어") {
                 this.postPosition = postPosition
@@ -31,7 +31,7 @@ class BoeoParser(private val parser: IParser?) : IParser {
 
         if (!parseContext.isNoParse) {
             val verify = IParser.PostPositionVerify(postPosition, 0)
-            val 접속조사리스트 = JosaStorage.INSTANCE.getJosaList(JosaCommunity.접속조사)
+            val 접속조사리스트 = JosaStorage.getJosaList(JosaCommunity.접속조사)
             val contextMap = parseContext.parsedMap
 
             var srcIndex = 0

@@ -17,7 +17,6 @@ class SentenceMultiDataParser(private val parser: IParser?) : IParser {
                 val sentence = sentences[sentences.size - 1]
                 val specific = sentence.specific
 
-
                 if (specific != null) {
                     val others = specific.others
                     //System.out.println("not null specific " + index + ", " + others.size());

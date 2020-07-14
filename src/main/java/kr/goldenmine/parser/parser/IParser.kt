@@ -30,7 +30,7 @@ fun defaultParse(source: String, josaList: List<IPostPosition>, bufferProcess: B
     var start = 0
     var finish = 0
 
-    for (i in 0 until source.length) {
+    for (i in source.indices) {
         val ch = source[i]
         var parseAvailable = false
         var successParse = false

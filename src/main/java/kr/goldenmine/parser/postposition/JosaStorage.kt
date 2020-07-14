@@ -2,7 +2,7 @@ package kr.goldenmine.parser.postposition
 
 import java.util.*
 
-class JosaStorage private constructor() {
+object JosaStorage {
 
     private val josaMap = HashMap<JosaCommunity, MutableList<IPostPosition>>()
     private val allJosaList = ArrayList<IPostPosition>()
@@ -30,7 +30,7 @@ class JosaStorage private constructor() {
     }
 
     fun getJosaList(community: JosaCommunity): MutableList<IPostPosition> {
-        return josaMap[community]!!
+        return ArrayList(josaMap[community]!!)
     }
 
     fun addJosa(josa: IPostPosition) {
@@ -46,7 +46,10 @@ class JosaStorage private constructor() {
         allJosaList.add(josa)
     }
 
-    companion object {
-        val INSTANCE = JosaStorage()
+    fun getGyukJosaListWithBojo(): List<IPostPosition> {
+        val list = getJosaList(JosaCommunity.격조사)
+        list.addAll(getJosaList(JosaCommunity.보조사))
+
+        return list
     }
 }

@@ -2,6 +2,7 @@ package kr.goldenmine.parser.parser
 
 import kr.goldenmine.parser.Code
 import kr.goldenmine.parser.ParseContext
+import kr.goldenmine.parser.parser.util.parseVariableAndConnector
 import kr.goldenmine.parser.postposition.JosaCommunity
 import kr.goldenmine.parser.postposition.JosaStorage
 
@@ -10,10 +11,10 @@ class VariableConnectorParser(private val parser: IParser?) : IParser {
     override fun parse(code: Code, parseContext: ParseContext, index: Int, debug: Boolean, metadata: List<Any>?) {
         parser?.parse(code, parseContext, index, debug, metadata)
         if (!parseContext.isNoParse) {
-            val verify = IParser.PostPositionVerify(JosaStorage.INSTANCE.getJosaList(JosaCommunity.접속조사)[0], 0)
+            val verify = IParser.PostPositionVerify(JosaStorage.getJosaList(JosaCommunity.접속조사)[0], 0)
             val map = parseContext.parsedMap
 
-            val 접속조사리스트 = JosaStorage.INSTANCE.getJosaList(JosaCommunity.접속조사)
+            val 접속조사리스트 = JosaStorage.getJosaList(JosaCommunity.접속조사)
 
             for (key in map.keys) {
                 if (key == "서술어") {

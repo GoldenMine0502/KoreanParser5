@@ -7,20 +7,15 @@ import kr.goldenmine.parser.postposition.JosaStorage
 import java.util.*
 
 class DefaultParser(private val childParser: IParser?) : IParser {
-
-
     override fun parse(code: Code, parseContext: ParseContext, index: Int, debug: Boolean, metadata: List<Any>?) {
         childParser?.parse(code, parseContext, index, debug, metadata)
         if (!parseContext.isNoParse) {
             val source = parseContext.source
-            val 격조사리스트 = ArrayList(JosaStorage.INSTANCE.getJosaList(JosaCommunity.격조사))
-            격조사리스트.addAll(JosaStorage.INSTANCE.getJosaList(JosaCommunity.보조사))
+            val 격조사List = JosaStorage.getGyukJosaListWithBojo()
 
-            parseContext.parsedMap.putAll(defaultParse(source, 격조사리스트, false, null))
+            parseContext.parsedMap.putAll(defaultParse(source, 격조사List, false, null))
             if(debug)
                 println("DefaultParser: ${parseContext.parsedMap}")
-            //println(parseContext.parsedMap)
-            //System.out.println(parseContext.getParsedMap());
         }
     }
 
