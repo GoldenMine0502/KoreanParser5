@@ -35,7 +35,7 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
 
             if (predicateContexts != null) {
                 if(debug)
-                    println("SentenceLastParser-predicates: ${predicateContexts}")
+                    println("SentenceLastParser-predicates: $predicateContexts")
                 for (predicatesIndex in predicateContexts.indices) {
                     val context = predicateContexts[predicatesIndex]
 

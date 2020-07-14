@@ -22,7 +22,7 @@ class PronounStorage private constructor() {
         return pronouns[key]
     }
 
-    fun hasPronoun(key: String?): Boolean {
+    fun isPronoun(key: String?): Boolean {
         return pronouns.containsKey(key)
     }
 

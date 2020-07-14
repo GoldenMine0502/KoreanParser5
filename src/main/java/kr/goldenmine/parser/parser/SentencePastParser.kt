@@ -39,7 +39,7 @@ class SentencePastParser(val parser: IParser?) : IParser {
                 parsed.forEach {
                     if(it != null) {
                         //println(it.stringValue() + ", " + PronounStorage.INSTANCE.hasPronoun(it.stringValue()))
-                        if (it.isString() && PronounStorage.INSTANCE.hasPronoun(it.stringValue())) {
+                        if (it.isString() && PronounStorage.INSTANCE.isPronoun(it.stringValue())) {
                             depth++
                         }
                     }
@@ -52,7 +52,7 @@ class SentencePastParser(val parser: IParser?) : IParser {
             parseContext.sentenceDepth.addAll(list)
 
             if(debug)
-                println("SentencePastParser-Finish: ${parseContext.parsedMap}")
+                println("SentencePastParser-Finish: ${parseContext.parsedMap} $list")
 
 
 
