@@ -9,7 +9,8 @@ class Variable : Cloneable {
 
     private var value: KoreanObject
 
-    private var isConst: Boolean = false
+    var isConst: Boolean = false
+    private set
 
     var mode: VariableMode
         private set

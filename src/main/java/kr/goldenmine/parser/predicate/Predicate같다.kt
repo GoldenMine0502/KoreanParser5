@@ -6,7 +6,7 @@ import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import java.util.*
 
-class Predicate같다 : IPredicate {
+open class Predicate같다 : IPredicate {
     override val neededReplaceVariable: List<Boolean>
         get() = listOf(true)
 

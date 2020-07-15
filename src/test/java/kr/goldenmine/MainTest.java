@@ -20,7 +20,7 @@ public class MainTest extends TestCase {
         List<String> sources = new ArrayList<>();
         sources.add("[A]를 1로 설정합니다");
         sources.add("[B]를 2로 설정합니다");
-        //sources.add("[B]를 1로 설정합니다");
+        sources.add("[B]를 3으로 설정합니다");
         sources.add("[A]를 출력합니다");
         sources.add("[B]를 출력합니다");
         sources.add("~~[B]~~를 출력합니다");
@@ -41,10 +41,10 @@ public class MainTest extends TestCase {
         sources.add("다르네를 출력합니다");
         sources.add("조건문의 끝");
 
-        sources.add("[A]와 [C]가 같다면");
-        sources.add("같네2를 출력합니다");
-        sources.add("그렇지 않으면");
+        sources.add("[A]가 [C]와 다르다면");
         sources.add("다르네2를 출력합니다");
+        sources.add("그렇지 않으면");
+        sources.add("같네2를 출력합니다");
         sources.add("조건문의 끝");
         runCode(sources, true);
     }
@@ -71,7 +71,7 @@ public class MainTest extends TestCase {
         }
          */
 
-        runCode(sources, true);
+        runCode(sources, false);
     }
 
     @Test
