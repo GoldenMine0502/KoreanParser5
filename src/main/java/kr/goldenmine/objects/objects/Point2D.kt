@@ -53,7 +53,7 @@ open class Point2D(x: Double, y: Double) : KoreanObject {
     }
 
     override fun setValue(index: Int, value: KoreanObject) {
-        println("set: $index $value")
+//        println("set: $index $value")
         when (index) {
             0 -> this.x.setRoot(value)
             1 -> this.y.setRoot(value)

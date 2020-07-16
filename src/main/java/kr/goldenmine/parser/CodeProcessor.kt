@@ -46,7 +46,7 @@ class CodeProcessor(
                         println(" (sentence) noparse: ${sourceCode[line].isNoParse} multiprocess: ${it.multiProcessData} map: ${it.map} predicate: ${it.서술어.defaultSentence}")
                     }
 
-                    println("\n\n\n\n\n")
+                    println("\n")
 
 //                sourceCode[line].sentences.forEach {
 //                    println("${it.서술어.defaultSentence}, ${it.map}")
@@ -86,7 +86,10 @@ class CodeProcessor(
 
         var postedSpecific: IPredicateSpecific? = null
 
+        val variableReturns = ArrayList<Variable?>()
+
         while (performIndex < sourceCode.size) {
+//            Thread.sleep(1000L)
             try {
                 val parseContext = sourceCode[performIndex]
 
@@ -100,7 +103,6 @@ class CodeProcessor(
                 } else {
                     val sentences = parseContext.sentences
                     val pronounInfoList = parseContext.pronounInfoList
-                    val variableReturns = ArrayList<Variable?>()
 
                     var pronounInfoIndex = 0
 
@@ -169,8 +171,8 @@ class CodeProcessor(
 //                        }
 
                         if (pronoun != null) {
-                            result = pronoun!!.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
-                            pronoun!!.context.variables!![pronoun!!.variableIndex] = result
+                            result = pronoun.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
+                            pronoun.context.variables!![pronoun.variableIndex] = result
                         } else {
 //                            val x = printTime(100000) { sentence.서술어.perform(sentence, metadata, LOCAL) }
 //                            if (x > 5) {
@@ -264,6 +266,7 @@ class CodeProcessor(
             //            } catch (InterruptedException e) {
             //                e.printStackTrace();
             //            }
+            variableReturns.clear()
         }
     }
 

@@ -69,6 +69,7 @@ class VariableStorage private constructor(name: String) {
         }
 
         fun setVariableWithKey(name: Variable, result: KoreanObject, key: String?) {
+//            System.out.println("var set: $name to $result with $key")
             if(key == null) {
                 name.set(result)
             } else {

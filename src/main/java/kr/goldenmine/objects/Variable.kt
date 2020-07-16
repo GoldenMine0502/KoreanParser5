@@ -417,9 +417,9 @@ class Variable : Cloneable {
     fun isRealNum(): Boolean = value is ObjectDouble
     fun isBoolean(): Boolean = value is ObjectBoolean
 
-    fun stringValue(): String = value.getRoot() as String
-    fun intValue(): Long = value.getRoot() as Long
-    fun realNumValue(): Double = value.getRoot() as Double
+    fun stringValue(): String = value.getRoot().toString()
+    fun intValue(): Long = (value.getRoot() as Number).toLong()
+    fun realNumValue(): Double = (value.getRoot() as Number).toDouble()
     fun booleanValue(): Boolean = value.getRoot() as Boolean
     fun set(value: Boolean) {
         this.value = ObjectBoolean(value)
