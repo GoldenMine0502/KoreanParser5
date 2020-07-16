@@ -66,9 +66,7 @@ class ObjectString(str: String) : KoreanObject {
 
     override fun compareTo(other: KoreanObject): Int {
         if(other is ObjectString) {
-            if(value != null && other.value != null) {
-                return value!!.compareTo(other.value!!)
-            }
+            return value.compareTo(other.value)
         }
 
         throw CompareException("비교하려는 값이 \"문자열\"과 비교할 수 있는 값이 아닙니다.")

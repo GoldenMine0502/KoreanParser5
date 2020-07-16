@@ -6,6 +6,14 @@ import kr.goldenmine.objects.Variable
 import kr.goldenmine.parser.VariableStorage
 import java.util.HashMap
 
+
+const val MS = 1000
+const val MIN = 60
+const val SEC = 60
+const val DAY = 24
+const val MONTH = 30
+const val YEAR = 365
+
 open class Predicate멈추다 : IPredicate {
     override val neededReplaceVariable: List<Boolean>
         get() = listOf(true)
@@ -27,6 +35,7 @@ open class Predicate멈추다 : IPredicate {
         get() = listOf()
     override val optionalSentenceElementTypes: List<ValueScope>
         get() = listOf()
+
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable? {
         val 목적어 = sentence.map["목적어"]!!.variables!!
@@ -60,16 +69,23 @@ open class Predicate멈추다 : IPredicate {
                     }
                     when(unitSb.toString()) {
                         "나노초", "ns", "nano", "nanosecond", "nanoseconds", "나노",
-                        "나노세컨드", "나노새컨드", "나노 세컨드", "나노 새컨드" -> { Thread.sleep(time.toLong()) }
+                        "나노세컨드", "나노새컨드", "나노 세컨드", "나노 새컨드"
+                        -> { Thread.sleep(time.toLong()) }
                         "밀리초", "ms", "mili", "milimeter", "millimeter", "milisecond",
-                        "miliseconds", "밀리", "밀리세컨드", "밀리새컨드", "밀리 세컨드", "밀리 새컨드" -> { Thread.sleep(time.toLong()) }
-                        "초", "s", "sec", "second", "seconds" -> { Thread.sleep((time*1000).toLong()) }
-                        "분", "m", "min", "minute", "minutes" -> { Thread.sleep((time*1000*60).toLong()) }
-                        "시", "시간", "h", "hour", "hours" -> { Thread.sleep((time*1000*60*60).toLong()) }
-                        "일", "날", "d", "day", "days", "date" -> { Thread.sleep((time*1000*60*60*24).toLong()) }
-                        //"개월", "mm", "mon", "month", "months" -> { Thread.sleep((time*1000*60*60*24*30).toLong()) }
-                        //"년", "mm", "mon", "month", "months" -> { Thread.sleep((time*1000*60*60*24*30).toLong()) }
-
+                        "miliseconds", "밀리", "밀리세컨드", "밀리새컨드", "밀리 세컨드", "밀리 새컨드"
+                        -> { Thread.sleep(time.toLong()) }
+                        "초", "s", "sec", "second", "seconds"
+                        -> { Thread.sleep((time * MS).toLong()) }
+                        "분", "m", "min", "minute", "minutes"
+                        -> { Thread.sleep((time * MS * SEC).toLong()) }
+                        "시", "시간", "h", "hour", "hours"
+                        -> { Thread.sleep((time * MS * SEC * MIN).toLong()) }
+                        "일", "날", "d", "day", "days", "date"
+                        -> { Thread.sleep((time * MS * SEC * MIN * DAY).toLong()) }
+                        "개월", "mm", "mon", "month", "months"
+                        -> { Thread.sleep((time * MS * SEC * MIN * DAY * MONTH).toLong()) }
+                        "년", "yy", "y", "year", "years"
+                        -> { Thread.sleep((time * MS * SEC * MIN * DAY * YEAR).toLong()) }
                     }
                 }
             }
