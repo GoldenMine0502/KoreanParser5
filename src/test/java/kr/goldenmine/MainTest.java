@@ -414,13 +414,13 @@ public class MainTest extends TestCase {
                 "[B]를 4로 초기화합니다",
                 //"[C]를 [A]에 1을 더한 것으로 초기화합니다",
                 "[A]에 [B]을 더해 [C]를 초기화합니다",
-                "[A]에 [B]을 곱하여 [D]를 초기화합니다",
-                "[A]를 [B]로 나눠 [E]를 초기화합니다",
-                "[A]에서 [B]를 빼 [F]를 초기화합니다",
-                "A: [A], B: [B], C: [C], D: [D], E: [E], F: [F]를 출력합니다"
+                "[A]에서 [B]를 빼 [D]를 초기화합니다",
+                "[A]에 [B]을 곱하여 [E]를 초기화합니다",
+                "[A]를 [B]로 나눠 [F]를 초기화합니다",
+                "A: [A], B: [B]\n[A] + [B] = [C]\n[A] - [B] = [D]\n[A] * [B] = [E]\n[A] / [B] = [F]를 출력합니다"
         );
 
-        runCode(sources, true);
+        runCode(sources, false);
     }
 
     // [A]가 [B]라면
@@ -479,11 +479,11 @@ public class MainTest extends TestCase {
                 //))
                 , null);
         codeProcessor.compile(new SentenceMultiDataParser(null), null);
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(1000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         if(perform)
             codeProcessor.perform(null);
     }

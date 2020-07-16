@@ -2,7 +2,7 @@ package kr.goldenmine.parser.pronoun
 
 import java.util.*
 
-class PronounStorage private constructor() {
+object PronounStorage {
 
     private val pronouns = HashMap<String, IPronoun>()
 
@@ -30,7 +30,7 @@ class PronounStorage private constructor() {
         pronouns[pronoun.type] = pronoun
     }
 
-    companion object {
-        val INSTANCE = PronounStorage()
-    }
+//    companion object {
+//        val INSTANCE = PronounStorage()
+//    }
 }

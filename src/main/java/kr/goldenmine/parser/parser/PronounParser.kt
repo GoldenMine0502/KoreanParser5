@@ -33,7 +33,7 @@ class PronounParser(private val parser: IParser?) : IParser {
                                     if (variable != null && variable.mode == VariableMode.STRING_MODE) {
                                         val modifiedKey = variable.stringValue()
 
-                                        if (!alreadyAdded.contains(variable) && PronounStorage.INSTANCE.isPronoun(variable.stringValue())) {
+                                        if (!alreadyAdded.contains(variable) && PronounStorage.isPronoun(variable.stringValue())) {
                                             alreadyAdded.add(variable)
                                             var modifying: Sentence? = null
                                             var modifyingIndex = 0
@@ -50,7 +50,7 @@ class PronounParser(private val parser: IParser?) : IParser {
                                             }
 
                                             if (modifying != null && modifiedKey != null) {
-                                                val pronoun = PronounStorage.INSTANCE.getPronoun(modifiedKey)
+                                                val pronoun = PronounStorage.getPronoun(modifiedKey)
 
                                                 if (pronoun != null) {
                                                     val info = PronounInfo(modifying, modifyingIndex, sentence, sentenceIndex, context, variableIndex, modifiedKey!!, pronoun)
