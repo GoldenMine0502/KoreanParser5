@@ -40,17 +40,51 @@ class Predicate곱하다 : IPredicate {
         get() = listOf()
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable {
-        val variableName = sentence.map["부사어에"]?.variables?.last() ?: throw RuntimeException("곱하다 부사어(에)가 없습니다")
-        //val variableKey = sentence.map["부사어에서"]!!.genitiveListLastKeys
-        val variableValue = sentence.map["목적어"]?.variables?.last() ?: throw RuntimeException("곱하다 목적어가 없습니다")
+        val variableName = sentence.map["부사어에"]?.variables?.first() ?: throw RuntimeException("더하다 부사어(에)가 없습니다")
+        //val variableKeys = sentence.map["부사어에"]!!.genitiveListLastKeys.last()
+        val variableValues = sentence.map["목적어"]?.variables ?: throw RuntimeException("더하다 목적어가 없습니다")
 
-        return when(Integer.max(variableName.mode.mode, variableValue.mode.mode)) {
-            VariableMode.BOOLEAN_MODE.mode -> Variable(ObjectBoolean(variableName.booleanValue() && variableValue.booleanValue()))
-            VariableMode.INT_MODE.mode -> Variable(ObjectInteger(variableName.intValue() * variableValue.intValue()))
-            VariableMode.REALNUM_MODE.mode -> Variable(ObjectDouble(variableName.realNumValue() * variableValue.realNumValue()))
+        val maxMode = Integer.max(variableName.mode.mode, sentence.map["목적어"]?.variables?.filterNotNull()?.maxBy { it.mode.mode }?.mode?.mode
+                ?: throw RuntimeException("더하다 목적어가 없습니다"))
+        return when(maxMode) {
+            VariableMode.BOOLEAN_MODE.mode -> {
+                var value = variableName.booleanValue()
+                variableValues.forEach { value = value && it!!.booleanValue() }
+
+                Variable(value)
+            }
+            VariableMode.INT_MODE.mode -> {
+                var value = variableName.intValue()
+                variableValues.forEach { value *= it!!.intValue() }
+
+                Variable(value)
+            }
+            VariableMode.REALNUM_MODE.mode -> {
+                var value = variableName.realNumValue()
+                variableValues.forEach { value *= it!!.realNumValue() }
+
+                Variable(value)
+            }
             VariableMode.STRING_MODE.mode -> throw RuntimeException("String은 곱할 수 없습니다.")
+//            VariableMode.STRING_MODE.mode -> {
+//                var value = StringBuilder(variableName.stringValue())
+//                variableValues.forEach { value.append(it.stringValue()) }
+//
+//                Variable(value.toString())
+//            }
             else -> throw RuntimeException("unreachable code")
         }
+//        val variableName = sentence.map["부사어에"]?.variables?.last() ?: throw RuntimeException("곱하다 부사어(에)가 없습니다")
+//        //val variableKey = sentence.map["부사어에서"]!!.genitiveListLastKeys
+//        val variableValue = sentence.map["목적어"]?.variables?.last() ?: throw RuntimeException("곱하다 목적어가 없습니다")
+//
+//        return when(Integer.max(variableName.mode.mode, variableValue.mode.mode)) {
+//            VariableMode.BOOLEAN_MODE.mode -> Variable(ObjectBoolean(variableName.booleanValue() && variableValue.booleanValue()))
+//            VariableMode.INT_MODE.mode -> Variable(ObjectInteger(variableName.intValue() * variableValue.intValue()))
+//            VariableMode.REALNUM_MODE.mode -> Variable(ObjectDouble(variableName.realNumValue() * variableValue.realNumValue()))
+//            VariableMode.STRING_MODE.mode -> throw RuntimeException("String은 곱할 수 없습니다.")
+//            else -> throw RuntimeException("unreachable code")
+//        }
 //        val returnVariable = AtomicReference<Variable>()
 //
 //        val variableNamesCopy = ArrayList<Variable?>(variableNames.size)

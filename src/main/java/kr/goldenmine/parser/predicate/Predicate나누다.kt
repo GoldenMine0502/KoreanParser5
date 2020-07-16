@@ -42,23 +42,46 @@ class Predicate나누다 : IPredicate {
         get() = listOf()
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable {
-        val variableName = sentence.map["목적어"]?.variables?.last() ?: throw RuntimeException("곱하다 목적어가 없습니다")
-        //val variableKey = sentence.map["부사어에서"]!!.genitiveListLastKeys
-        val variableValue = sentence.map["부사어로"]?.variables?.last() ?: throw RuntimeException("곱하다 부사어(로)가 없습니다")
+        val variableName = sentence.map["목적어"]?.variables?.first() ?: throw RuntimeException("나누다 부사어(에)가 없습니다")
+        //val variableKeys = sentence.map["부사어에"]!!.genitiveListLastKeys.last()
+        val variableValues = sentence.map["부사어로"]?.variables ?: throw RuntimeException("나누다 목적어가 없습니다")
 
-        return when(Integer.max(variableName.mode.mode, variableValue.mode.mode)) {
-            VariableMode.BOOLEAN_MODE.mode -> throw RuntimeException("Boolean은 나눌 수 없습니다.")
+        val maxMode = Integer.max(variableName.mode.mode, sentence.map["목적어"]?.variables?.filterNotNull()?.maxBy { it.mode.mode }?.mode?.mode
+                ?: throw RuntimeException("더하다 목적어가 없습니다"))
+        return when(maxMode) {
+//            VariableMode.BOOLEAN_MODE.mode -> {
+//                var value = variableName.booleanValue()
+//                variableValues.forEach { value = value && it.booleanValue() }
+//
+//                Variable(value)
+//            }
+            VariableMode.BOOLEAN_MODE.mode -> throw RuntimeException("boolean은 나눌 수 없습니다.")
             VariableMode.INT_MODE.mode -> {
-                val name = variableName.intValue()
-                val value = variableValue.intValue()
-                return if(name % value == 0L) {
-                    Variable(ObjectInteger(variableName.intValue() / variableValue.intValue()))
-                } else { // 나눌 때 실수가 될 가능성이 있음
-                    Variable(ObjectDouble(variableName.realNumValue() / variableValue.realNumValue()))
+                var temp = variableName.intValue()
+                variableValues.forEach { temp %= it!!.intValue() }
+                if(temp == 0L) {
+                    var value = variableName.intValue()
+                    variableValues.forEach { value /= it!!.intValue() }
+                    Variable(value)
+                } else {
+                    var value = variableName.realNumValue()
+                    variableValues.forEach { value /= it!!.realNumValue() }
+                    Variable(value)
                 }
             }
-            VariableMode.REALNUM_MODE.mode -> Variable(ObjectDouble(variableName.realNumValue() / variableValue.realNumValue()))
-            VariableMode.STRING_MODE.mode -> throw RuntimeException("String은 나눌 수 없습니다.")
+            VariableMode.REALNUM_MODE.mode -> {
+                var value = variableName.realNumValue()
+                variableValues.forEach { value *= it!!.realNumValue() }
+
+                Variable(value)
+            }
+            VariableMode.STRING_MODE.mode -> throw RuntimeException("String은 곱할 수 없습니다.")
+//            VariableMode.STRING_MODE.mode -> {
+//                var value = StringBuilder(variableName.stringValue())
+//                variableValues.forEach { value.append(it.stringValue()) }
+//
+//                Variable(value.toString())
+//            }
             else -> throw RuntimeException("unreachable code")
         }
 //        val variableNames = sentence.map["목적어"]!!.variables!!

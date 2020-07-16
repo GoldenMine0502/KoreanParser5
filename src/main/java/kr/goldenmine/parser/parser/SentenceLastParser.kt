@@ -98,7 +98,8 @@ class SentenceLastParser(private val parser: IParser?) : IParser {
                             throw CompileException("서술어 [ " + context.source + " ]에 대한 문장성분이 제대로 갖추어지지 못했습니다.")
                         }
                     } else {
-                        throw CompileException("[ " + context.source + " ]에 대한 서술어 정보가 없습니다.")
+                        //System.out.println(ParseContext.komoran.analyze("곱하다").list)
+                        throw CompileException("[ " + context.source + " ]에 대한 서술어 정보가 없습니다: ${ParseContext.komoran.analyze(context.source).list}")
                     }
                     // specific 파싱
                     for (predicateSpecific in PredicateStorage.INSTANCE.specifics) {

@@ -1,5 +1,6 @@
 package kr.goldenmine.parser.predicate
 
+import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.parser.Context
 import kr.goldenmine.parser.Sentence
 import kr.goldenmine.objects.Variable
@@ -42,17 +43,50 @@ class Predicate더하다 : IPredicate {
         get() = listOf()
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable {
-        val variableName = sentence.map["부사어에"]?.variables?.last() ?: throw RuntimeException("더하다 부사어(에)가 없습니다")
+        val variableName = sentence.map["부사어에"]?.variables?.first() ?: throw RuntimeException("더하다 부사어(에)가 없습니다")
         //val variableKeys = sentence.map["부사어에"]!!.genitiveListLastKeys.last()
-        val variableValue = sentence.map["목적어"]?.variables?.last() ?: throw RuntimeException("더하다 목적어가 없습니다")
+        val variableValues = sentence.map["목적어"]?.variables ?: throw RuntimeException("더하다 목적어가 없습니다")
 
-        return when(max(variableName.mode.mode, variableValue.mode.mode)) {
+        val maxMode = max(variableName.mode.mode, sentence.map["목적어"]?.variables?.filterNotNull()?.maxBy { it.mode.mode }?.mode?.mode ?: throw RuntimeException("더하다 목적어가 없습니다"))
+        return when(maxMode) {
             VariableMode.BOOLEAN_MODE.mode -> throw RuntimeException("Boolean은 더할 수 없습니다.")
-            VariableMode.INT_MODE.mode -> Variable(ObjectInteger(variableName.intValue() + variableValue.intValue()))
-            VariableMode.REALNUM_MODE.mode -> Variable(ObjectDouble(variableName.realNumValue() + variableValue.realNumValue()))
-            VariableMode.STRING_MODE.mode -> Variable(ObjectString(variableName.stringValue() + variableValue.stringValue()))
+            VariableMode.INT_MODE.mode -> {
+                var value = variableName.intValue()
+                variableValues.forEach { value += it!!.intValue() }
+
+                Variable(value)
+            }
+            VariableMode.REALNUM_MODE.mode -> {
+                var value = variableName.realNumValue()
+                variableValues.forEach { value += it!!.realNumValue() }
+
+                Variable(value)
+            }
+            VariableMode.STRING_MODE.mode -> {
+                var value = StringBuilder(variableName.stringValue())
+                variableValues.forEach { value.append(it!!.stringValue()) }
+
+                Variable(value.toString())
+            }
             else -> throw RuntimeException("unreachable code")
         }
+
+//        val lastVariable = AtomicReference<Variable>()
+//
+//        VariableStorage.setVariableAutomatically(local, variableNames, variableKeys, variableValues) { name, value, key, _ ->
+//
+//            lastVariable.set(name)
+//        }
+//
+//        return lastVariable.get()
+//
+//        return when(max(variableName.mode.mode, variableValue.mode.mode)) {
+//            VariableMode.BOOLEAN_MODE.mode -> throw RuntimeException("Boolean은 더할 수 없습니다.")
+//            VariableMode.INT_MODE.mode -> Variable(ObjectInteger(variableName.intValue() + variableValue.intValue()))
+//            VariableMode.REALNUM_MODE.mode -> Variable(ObjectDouble(variableName.realNumValue() + variableValue.realNumValue()))
+//            VariableMode.STRING_MODE.mode -> Variable(ObjectString(variableName.stringValue() + variableValue.stringValue()))
+//            else -> throw RuntimeException("unreachable code")
+//        }
 //        val returnVariable = AtomicReference<Variable>()
 //
 //        VariableStorage.setVariableAutomatically(local, variableNames, variableKeys, variableValues) { k, v, key, r ->
