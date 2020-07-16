@@ -19,9 +19,9 @@ class ObjectInteger(value: Long) : ObjectNumber() {
     override fun toString(): String = value.toString()// + " / " + super.toString()
 
     override fun add(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectInteger((value.toInt() + other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectInteger((value.toInt() + other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectInteger((value.toInt() + other.value))
         }
@@ -29,15 +29,15 @@ class ObjectInteger(value: Long) : ObjectNumber() {
             return ObjectDouble((value.toDouble() + other.value))
         }
         if (other is ObjectString) {
-            return ObjectString(StringBuilder(value.toString()).append(other.str).toString())
+            return ObjectString(StringBuilder(value.toString()).append(other.value).toString())
         }
         throw CalculateException("정수와 더할 수 없는 값입니다.")
     }
 
     override fun sub(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectInteger((value.toInt() - other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectInteger((value.toInt() - other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectInteger((value.toInt() - other.value))
         }
@@ -48,9 +48,9 @@ class ObjectInteger(value: Long) : ObjectNumber() {
     }
 
     override fun mul(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectInteger((value.toInt() * other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectInteger((value.toInt() * other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectInteger((value.toInt() * other.value))
         }
@@ -61,11 +61,11 @@ class ObjectInteger(value: Long) : ObjectNumber() {
     }
 
     override fun div(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            val first = value
-            val second = other.value.toLong()
-            return if(first % second == 0L) { ObjectInteger((first / second)) } else { ObjectDouble((first.toDouble() / second.toDouble())) }
-        }
+//        if(other is ObjectChar) {
+//            val first = value
+//            val second = other.value.toLong()
+//            return if(first % second == 0L) { ObjectInteger((first / second)) } else { ObjectDouble((first.toDouble() / second.toDouble())) }
+//        }
         if(other is ObjectInteger) {
             val first = value
             val second = other.value
@@ -79,9 +79,9 @@ class ObjectInteger(value: Long) : ObjectNumber() {
     }
 
     override fun mod(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectChar((value.toLong() % other.value.toLong()).toChar())
-        }
+//        if(other is ObjectChar) {
+//            return ObjectChar((value.toLong() % other.value.toLong()).toChar())
+//        }
         if(other is ObjectInteger) {
             return ObjectInteger(value.toLong() % other.value)
         }
@@ -92,9 +92,9 @@ class ObjectInteger(value: Long) : ObjectNumber() {
     }
 
     override fun setRoot(value: Any) {
-        if(value is ObjectChar) {
-            this.value = value.value.toLong()
-        }
+//        if(value is ObjectChar) {
+//            this.value = value.value.toLong()
+//        }
         if(value is ObjectInteger) {
             this.value = value.value
         }

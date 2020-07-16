@@ -22,9 +22,9 @@ class ObjectDouble(value: Double) : ObjectNumber() {
         if(value is ObjectInteger) {
             this.value = value.value.toDouble()
         }
-        if(value is ObjectChar) {
-            this.value = value.value.toDouble()
-        }
+//        if(value is ObjectChar) {
+//            this.value = value.value.toDouble()
+//        }
         if(value is Double) {
             this.value = value
         }
@@ -37,9 +37,9 @@ class ObjectDouble(value: Double) : ObjectNumber() {
     }
 
     override fun add(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectDouble((value + other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectDouble((value + other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectDouble((value + other.value))
         }
@@ -47,15 +47,15 @@ class ObjectDouble(value: Double) : ObjectNumber() {
             return ObjectDouble((value + other.value))
         }
         if (other is ObjectString) {
-            return ObjectString(StringBuilder(value.toString()).append(other.str).toString())
+            return ObjectString(StringBuilder(value.toString()).append(other.value).toString())
         }
         throw CalculateException("실수와 더할 수 없는 값입니다.")
     }
 
     override fun sub(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectDouble((value - other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectDouble((value - other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectDouble((value - other.value))
         }
@@ -66,9 +66,9 @@ class ObjectDouble(value: Double) : ObjectNumber() {
     }
 
     override fun mul(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectDouble((value * other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectDouble((value * other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectDouble((value * other.value))
         }
@@ -79,9 +79,9 @@ class ObjectDouble(value: Double) : ObjectNumber() {
     }
 
     override fun div(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectDouble(value / other.value.toInt())
-        }
+//        if(other is ObjectChar) {
+//            return ObjectDouble(value / other.value.toInt())
+//        }
         if(other is ObjectInteger) {
             return ObjectDouble(value / other.value)
         }
@@ -92,9 +92,9 @@ class ObjectDouble(value: Double) : ObjectNumber() {
     }
 
     override fun mod(other: KoreanObject): KoreanObject {
-        if(other is ObjectChar) {
-            return ObjectDouble((value % other.value.toInt()))
-        }
+//        if(other is ObjectChar) {
+//            return ObjectDouble((value % other.value.toInt()))
+//        }
         if(other is ObjectInteger) {
             return ObjectDouble(value % other.value)
         }

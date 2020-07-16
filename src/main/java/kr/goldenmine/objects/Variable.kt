@@ -1,9 +1,6 @@
 package kr.goldenmine.objects
 
-import kr.goldenmine.objects.objects.defaults.ObjectBoolean
-import kr.goldenmine.objects.objects.defaults.ObjectDouble
-import kr.goldenmine.objects.objects.defaults.ObjectInteger
-import kr.goldenmine.objects.objects.defaults.ObjectString
+import kr.goldenmine.objects.objects.defaults.*
 
 class Variable : Cloneable {
 
@@ -356,9 +353,9 @@ class Variable : Cloneable {
                     VariableMode.STRING_MODE -> value = ObjectString((value as ObjectDouble).value.toString())
                 }
                 VariableMode.STRING_MODE -> when (toMode) {
-                    VariableMode.BOOLEAN_MODE -> value = ObjectBoolean((value as ObjectString).str.toBoolean())
-                    VariableMode.INT_MODE -> value = ObjectInteger((value as ObjectString).str.toInt())
-                    VariableMode.REALNUM_MODE -> value = ObjectDouble((value as ObjectString).str.toDouble())
+                    VariableMode.BOOLEAN_MODE -> value = ObjectBoolean((value as ObjectString).value.toBoolean())
+                    VariableMode.INT_MODE -> value = ObjectInteger((value as ObjectString).value.toInt())
+                    VariableMode.REALNUM_MODE -> value = ObjectDouble((value as ObjectString).value.toDouble())
                 }
             }
 
@@ -439,15 +436,49 @@ class Variable : Cloneable {
 
     fun set(value: KoreanObject) {
         this.value = value
+
+        this.mode = if(value is ObjectBoolean) {
+            VariableMode.BOOLEAN_MODE
+        } else if(value is ObjectInteger) {
+            VariableMode.INT_MODE
+        } else if(value is ObjectDouble) {
+            VariableMode.REALNUM_MODE
+        } else if(value is ObjectString) {
+            VariableMode.STRING_MODE
+        } else {
+            VariableMode.OBJECT_MODE
+        }
     }
+
+
+    fun set(value: ObjectBoolean) {
+        this.value = value
+        this.mode = VariableMode.BOOLEAN_MODE
+    }
+
+    fun set(value: ObjectInteger) {
+        this.value = value
+        this.mode = VariableMode.INT_MODE
+    }
+
+//    fun set(value: ObjectChar) {
+//        this.value = value
+//        this.mode = VariableMode.STRING_MODE
+//    }
+
+    fun set(value: ObjectString) {
+        this.value = value
+        this.mode = VariableMode.STRING_MODE
+    }
+
 
     fun set(result: Variable) {
         when(result.mode) {
             VariableMode.BOOLEAN_MODE -> set(result.booleanValue())
             VariableMode.INT_MODE -> set(result.intValue())
             VariableMode.REALNUM_MODE -> set(result.realNumValue())
-            VariableMode.STRING_MODE -> set(result.stringValue()!!)
-            VariableMode.OBJECT_MODE -> set(result.get()!!)
+            VariableMode.STRING_MODE -> set(result.stringValue())
+            VariableMode.OBJECT_MODE -> set(result.get())
         }
     }
     //

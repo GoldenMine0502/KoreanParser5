@@ -45,6 +45,7 @@ open class Point2D(x: Double, y: Double) : KoreanObject {
     }
 
     override fun setValue(key: String, value: KoreanObject) {
+//        println("set: $key $value")
         when (key) {
             "x", "X" -> this.x.setRoot(value)
             "y", "Y" -> this.y.setRoot(value)
@@ -52,6 +53,7 @@ open class Point2D(x: Double, y: Double) : KoreanObject {
     }
 
     override fun setValue(index: Int, value: KoreanObject) {
+        println("set: $index $value")
         when (index) {
             0 -> this.x.setRoot(value)
             1 -> this.y.setRoot(value)

@@ -277,25 +277,36 @@ class CodeProcessor(
             if (context != null) {
                 val variables = context.variables!!
                 val variableGenitives = context.genitiveList
+//                var variableKey: String? = null
 
                 for (variableIndex in variables.indices) {
                     val variable = variables[variableIndex]
+//                    println(variable)
+
 
                     if (variable != null && replaceable[key]!!) {
                         if (variableGenitives != null) {
                             val genitives = variableGenitives[variableIndex]
 
                             if (genitives != null) {
-                                var currentIndex = 0
-
                                 var result: KoreanObject = genitives[0].get()
+//                                println("resultpast: $result")
+//                                if(debug) {
+//
+//                                }
 
                                 if (result is ObjectString && VariableStorage.isVariable(result.getRoot() as String)) {
                                     val value = result.getRoot() as String
                                     val valueCut = value.substring(1, value.length - 1)
+//                                    if(debug)
+//                                        println("valuecut: $valueCut")
+
                                     if (storage.hasVariable(valueCut)) {
+//                                            println("has variable")
                                         result = storage.getVariable(valueCut)!!.get()
+
                                     } else if (VariableStorage.GLOBAL.hasVariable(valueCut)) {
+//                                            println("has variable 2")
                                         result = VariableStorage.GLOBAL.getVariable(valueCut)!!.get()
                                     } else {
                                         val variable = Variable(0, false)
@@ -304,14 +315,21 @@ class CodeProcessor(
                                     }
                                 }
 
-                                if (debug)
-                                    println("result: $result")
+                                //if (debug)
+//                                    println("result: $result")
+
+                                var currentIndex = 0
 
                                 while (currentIndex < genitives.size - 1) {
                                     val next = genitives[currentIndex + 1]
 
-                                    val tempResult = result.getValue(next.get().toString())
+//                                    println(next.stringValue())
+//                                    if(debug) {
+//                                    }
+
+                                    val tempResult = result.getValue(next.stringValue())
                                     if (tempResult != null) {
+//                                        variableKey = next.stringValue()
                                         result = tempResult
                                     } else {
                                         throw RuntimeException("속성 ${next.get()}이(가) 존재하지 않습니다.")
@@ -319,11 +337,16 @@ class CodeProcessor(
                                     currentIndex++
                                 }
 
-                                if (debug) {
-                                    println("genitiveResult: $result")
-                                }
+                                //if (debug) {
+//                                    println("genitiveResult: $result")
+//                                }
+//                                if(result is ObjectBoolean) {
+//                                }
 
                                 variable.set(result)
+//                                context.genitiveListLastKeys.add(variableKey)
+//                                println("changed: ${Integer.toHexString(result.hashCode())}")
+//                                println("changed: ${Integer.toHexString(variable.hashCode())}")
                             } else if (variable.mode == VariableMode.STRING_MODE) {
                                 val value = variable.stringValue()
 

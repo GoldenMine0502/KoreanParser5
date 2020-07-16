@@ -1,6 +1,8 @@
 package kr.goldenmine.parser
 
+import kr.goldenmine.objects.KoreanObject
 import kr.goldenmine.objects.Variable
+import kr.goldenmine.objects.objects.defaults.ObjectNumber
 import java.util.*
 
 class VariableStorage private constructor(name: String) {
@@ -66,7 +68,22 @@ class VariableStorage private constructor(name: String) {
             //return key.startsWith("[") && key.endsWith("]");
         }
 
-        fun setVariableAutomatically(local: VariableStorage, variableNames: List<Variable?>, variableValues: List<Variable?>, lambda: (Variable, Variable, VariableStorage) -> Unit) {
+        fun setVariableWithKey(name: Variable, result: KoreanObject, key: String?) {
+            if(key == null) {
+                name.set(result)
+            } else {
+                when(name.get()) {
+                    is ObjectNumber -> {
+                        name.get().setRoot(result)
+                    }
+                    else -> {
+                        name.get().setValue(key, result)
+                    }
+                }
+            }
+        }
+
+        fun setVariableAutomatically(local: VariableStorage, variableNames: List<Variable?>, variableKeys: List<String?>, variableValues: List<Variable?>, lambda: (Variable, Variable, String?, VariableStorage) -> Unit) {
             var valueIndex = 0
 
 //            val variableNames = ArrayList<Variable?>(variableNamesOriginal.size)
@@ -74,6 +91,7 @@ class VariableStorage private constructor(name: String) {
 
             for (nameIndex in variableNames.indices) {
                 val variableName = variableNames[nameIndex]
+                val variableKey = variableKeys[nameIndex]
                 val variableValue = variableValues[valueIndex]
 
                 val variableNameMode = variableName!!.mode.mode
@@ -85,7 +103,7 @@ class VariableStorage private constructor(name: String) {
                     variableName.cast(variableValue.mode)
                 }
 
-                lambda.invoke(variableName, variableValue, local)
+                lambda.invoke(variableName, variableValue, variableKey, local)
                 //            String key = (String) variableName.get();
                 //            if(VariableStorage.isVariable(key)) {
                 //                String name = key.substring(1, key.length() - 1);

@@ -6,6 +6,7 @@ import java.lang.Double
 class Context(source: String, private var isConst: Boolean, var posStart: Int, var posFinish: Int) {
     var variables: MutableList<Variable?>? = null
     var genitiveList: ArrayList<MutableList<Variable>?>? = null
+    var genitiveListLastKeys: ArrayList<String?> = ArrayList()
     var source: String = source
         set(source) {
             if (!isConst) {

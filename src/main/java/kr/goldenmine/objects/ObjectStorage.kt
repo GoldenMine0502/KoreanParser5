@@ -15,7 +15,7 @@ class ObjectStorage private constructor() {
         addCreator(Point2DCreator())
         addCreator(Point3DCreator())
         addCreator(ObjectBooleanCreator())
-        addCreator(ObjectCharCreator())
+//        addCreator(ObjectCharCreator())
         addCreator(ObjectIntegerCreator())
         addCreator(ObjectStringCreator())
     }

@@ -26,6 +26,7 @@ class GenitiveParser(val parser: IParser?) : IParser {
             if (type != "서술어") {
                 u.forEach {
                     val list = ArrayList<MutableList<Variable>?>()
+                    val listKeys = ArrayList<String?>()
 
                     if(debug)
                         println("genitiveparser: to process $it")
@@ -38,15 +39,19 @@ class GenitiveParser(val parser: IParser?) : IParser {
                                 genitive.add(map["분류없음"]!![0])
 
                                 list.add(genitive.asSequence().map { context -> parseVariable(context.source) }.toCollection(ArrayList()))
+                                listKeys.add(genitive.last().source)
                             } else {
                                 list.add(null)
+                                listKeys.add(null)
                             }
                         } else {
                             list.add(null)
+                            listKeys.add(null)
                         }
                     }
 
                     it.genitiveList = list
+                    it.genitiveListLastKeys = listKeys
                 }
             }
         }

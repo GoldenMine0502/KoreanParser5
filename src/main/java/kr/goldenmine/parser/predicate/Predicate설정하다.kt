@@ -36,38 +36,64 @@ open class Predicate설정하다 : IPredicate {
         get() = listOf()
 
     override fun perform(sentence: Sentence, metadata: List<Any>?, local: VariableStorage): Variable {
+//        val context목적어 = sentence.map["목적어"]!!
+//        val context부사어로 = sentence.map["부사어로"]!!
+//
+//        val variableKeys = context목적어.variables!!
+//        val variableValues = context부사어로.variables!!
 
         val variableNames = sentence.map["목적어"]!!.variables!!
+        val variableKeys = sentence.map["목적어"]!!.genitiveListLastKeys
         val variableValues = sentence.map["부사어로"]!!.variables!!
 
         //println(variableNames)
 
         val returnVariable = AtomicReference<Variable>()
 
-        setVariableAutomatically(local, variableNames, variableValues) { k, v, r ->
-            //println("${k.get()} ${v.get()} 설정됨")
+        setVariableAutomatically(local, variableNames, variableKeys, variableValues) { name, value, key, storage ->
+//            println("$name $value ${Integer.toHexString(name.get().hashCode())} 설정됨")
 
             //val kValue = k.get()
-            val vValue = v.get()
+            val vValue = value.get()
 
-            //println("$kValue $vValue")
-
-
-            if(vValue is ObjectBoolean) {
-                k.set(ObjectBoolean(vValue.value))
+            when(vValue) {
+                is ObjectBoolean -> {
+                    val result = ObjectBoolean(vValue.value)
+                    VariableStorage.setVariableWithKey(name, result, key)
+                }
+                is ObjectInteger -> {
+                    val result = ObjectInteger(vValue.value)
+                    VariableStorage.setVariableWithKey(name, result, key)
+                }
+                is ObjectDouble -> {
+                    val result = ObjectDouble(vValue.value)
+                    VariableStorage.setVariableWithKey(name, result, key)
+                }
+                is ObjectString -> {
+                    val result = ObjectString(vValue.value)
+                    VariableStorage.setVariableWithKey(name, result, key)
+                }
+                else -> {
+                    VariableStorage.setVariableWithKey(name, vValue, key)
+                }
             }
+//            if(vValue is ObjectBoolean) {
+//                k.set(ObjectBoolean(vValue.value))
+//            }
+//
+//            if(vValue is ObjectChar) {
+//                k.set(ObjectChar(vValue.value))
+//            }
+//
+//            if(vValue is ObjectInteger) {
+//                k.set(ObjectInteger(vValue.value))
+//            }
+//
+//            if(vValue is ObjectDouble) {
+//                k.set(ObjectDouble(vValue.value))
+//            }
 
-            if(vValue is ObjectChar) {
-                k.set(ObjectChar(vValue.value))
-            }
 
-            if(vValue is ObjectInteger) {
-                k.set(ObjectInteger(vValue.value))
-            }
-
-            if(vValue is ObjectDouble) {
-                k.set(ObjectDouble(vValue.value))
-            }
 //
 //            if((kValue is ObjectNumber || kValue is ObjectString) && (vValue is ObjectNumber || vValue is ObjectString)) {
 //                println("${kValue} ${vValue} 설정중")
@@ -75,7 +101,7 @@ open class Predicate설정하다 : IPredicate {
 //            } else {
 //                k.set(v.get())
 //            }
-            returnVariable.set(k)
+            returnVariable.set(name)
 
 
         }
@@ -123,9 +149,9 @@ open class Predicate설정하다 : IPredicate {
         //        }).map()
     }
 
-    interface LambdaInterface<K, V, R> {
-        fun accept(k: K, v: V, r: R)
-    }
+//    interface LambdaInterface<K, V, R> {
+//        fun accept(k: K, v: V, r: R)
+//    }
 
     override fun isAccord(contexts: HashMap<String, Context>, metadata: List<Any>?): Boolean {
         return true

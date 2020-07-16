@@ -5,7 +5,7 @@ import kr.goldenmine.objects.KoreanObject
 
 class ObjectString(str: String) : KoreanObject {
     override fun clone(): KoreanObject {
-        return ObjectString(str)
+        return ObjectString(value)
     }
 
     override fun setValue(key: String, value: KoreanObject) {
@@ -18,39 +18,40 @@ class ObjectString(str: String) : KoreanObject {
 
     override fun add(other: KoreanObject): KoreanObject {
         if (other is ObjectString) {
-            return ObjectString(StringBuilder(str).append(other.str).toString())
+            return ObjectString(StringBuilder(value).append(other.value).toString())
         }
         if (other is ObjectBoolean) {
-            return ObjectString(StringBuilder(str).append(other.value).toString())
+            return ObjectString(StringBuilder(value).append(other.value).toString())
         }
         if (other is ObjectInteger) {
-            return ObjectString(StringBuilder(str).append(other.value).toString())
+            return ObjectString(StringBuilder(value).append(other.value).toString())
         }
         if (other is ObjectDouble) {
-            return ObjectString(StringBuilder(str).append(other.value).toString())
+            return ObjectString(StringBuilder(value).append(other.value).toString())
         }
-        if (other is ObjectChar) {
-            return ObjectString(StringBuilder(str).append(other.value).toString())
-        }
+//        if (other is ObjectChar) {
+//            return ObjectString(StringBuilder(str).append(other.value).toString())
+//        }
         return super.add(other)
     }
 
-    internal var str: String = str
+    internal var value: String = str
 
     constructor() : this("")
 
     override fun setRoot(value: Any) {
-        this.str = value as String
+        //println("root: $value")
+        this.value = value as String
     }
 
-    override fun toString(): String = str
+    override fun toString(): String = value
 
     override fun getValue(key: String): KoreanObject? {
         //[str]의 길이
         //[str]의 3번째 문자
         //[str]의 3번째문자
         when(key) {
-            "길이" -> return ObjectInteger(str.length)
+            "길이" -> return ObjectInteger(value.length)
         }
 
         return null
@@ -60,13 +61,13 @@ class ObjectString(str: String) : KoreanObject {
     }
 
     override fun getRoot(): Any {
-        return str
+        return value
     }
 
     override fun compareTo(other: KoreanObject): Int {
         if(other is ObjectString) {
-            if(str != null && other.str != null) {
-                return str!!.compareTo(other.str!!)
+            if(value != null && other.value != null) {
+                return value!!.compareTo(other.value!!)
             }
         }
 

@@ -30,7 +30,7 @@ class ObjectBoolean(value: Boolean) : ObjectNumber() {
 
     override fun add(other: KoreanObject): KoreanObject {
         if (other is ObjectString) {
-            return ObjectString(StringBuilder(value.toString()).append(other.str).toString())
+            return ObjectString(StringBuilder(value.toString()).append(other.value).toString())
         }
         throw CalculateException("이진수와 더할 수 없는 값입니다.")
     }

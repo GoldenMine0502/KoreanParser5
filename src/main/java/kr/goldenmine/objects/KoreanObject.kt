@@ -14,7 +14,6 @@ interface KoreanObject : Comparable<KoreanObject>, Cloneable {
     웹플 공수 심화영어
     PBE 앱제작
      */
-
     override public fun clone(): KoreanObject
 
     fun add(other: KoreanObject): KoreanObject {
