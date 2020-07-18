@@ -79,15 +79,15 @@ public class MainTest extends TestCase {
         List<String> sources = new ArrayList<>();
         sources.add("[A]를 0으로 설정합니다");
         sources.add("[B]를 2으로 설정합니다");
-        sources.add("[A] [B] 더합니다");
-        sources.add("[A] 1 뺍니다");
-        sources.add("[B] [A] 더합니다");
-        sources.add("[B] [A] 뺍니다");
+//        sources.add("[A] [B] 더합니다");
+        sources.add("[A]를 [A]에 1 더한 값으로 설정합니다");
+//        sources.add("[B] [A] 더합니다");
+//        sources.add("[B] [A] 뺍니다");
 //        sources.add("[A]에서 4를 뺍니다");
 //        sources.add("[A] 4 곱합니다");
 //        sources.add("[A] 6 나눕니다");
-        sources.add("[A] 출력합니다");
-        sources.add("[B] 출력합니다");
+        sources.add("[A]를 출력합니다");
+        sources.add("[B]를 출력합니다");
 
         //sources.add("[A] [B] 뺀 것을 출력합니다");
 
@@ -257,7 +257,6 @@ public class MainTest extends TestCase {
     public void test17() {
         List<String> sources = new ArrayList<>();
 
-
         sources.add("[A]를 0으로 초기화합니다");
         sources.add("[A]가 10보다 작거나 같으면 반복합니다");
         sources.add("[A]가 1에 2를 더한 것보다 크거나 같다면");
@@ -293,6 +292,7 @@ public class MainTest extends TestCase {
 
         runCode(sources, false);
     }
+
     @Test
     public void test19_2() {
         List<String> sources = new ArrayList<>();
