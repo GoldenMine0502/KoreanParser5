@@ -25,11 +25,11 @@ class CodeStorage {
 
             val code = Code(codeList)
             val codeProcessor = CodeProcessor(code)
-            codeProcessor.compile(OriginalBackupParser(GenitiveParser(//new SentenceMultiDataParser(
+            codeProcessor.interpret(OriginalBackupParser(GenitiveParser(//new SentenceMultiDataParser(
                     PronounParser(VariableConnectorParser(SentenceLastParser(
                             SentencePastParser(//new BoeoParser(
                                     DefaultParser(null))))))), null)
-            codeProcessor.compile(SentenceMultiDataParser(null), null)
+            codeProcessor.interpret(SentenceMultiDataParser(null), null)
             codeMap.computeIfAbsent(type) { ArrayList() }.add(codeProcessor)
         }
     }

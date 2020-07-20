@@ -31,7 +31,7 @@ class CodeProcessor(
 
      */
 
-    fun compile(parser: IParser, metadata: List<Any>?) {
+    fun interpret(parser: IParser, metadata: List<Any>?) {
         if (debug) {
             println("compiling... copyright by goldenmine (김태원) blog.naver.com/ehe123")
         }
@@ -80,8 +80,8 @@ class CodeProcessor(
          */
 
         val sourceCode = code.sourceCode
-        val LOCAL = VariableStorage.createVariableStorage("temp")
-
+//        val LOCAL = VariableStorage.createVariableStorage("temp")
+        val GLOBAL = VariableStorage.GLOBAL
         var performIndex = 0
 
         var postedSpecific: IPredicateSpecific? = null
@@ -112,7 +112,7 @@ class CodeProcessor(
                         // result: 20ms
 //                        print("apply variable ")
 //                        printTime(100000) {
-                        applyVariable(sentence, LOCAL)
+                        applyVariable(sentence, GLOBAL)
 //                        }
 
                         //val result = sentence.서술어.perform(sentence, LOCAL)
@@ -171,14 +171,14 @@ class CodeProcessor(
 //                        }
 
                         if (pronoun != null) {
-                            result = pronoun.modifiedKeyPronoun.perform(sentence, metadata, LOCAL)
+                            result = pronoun.modifiedKeyPronoun.perform(sentence, metadata, GLOBAL)
                             pronoun.context.variables!![pronoun.variableIndex] = result
                         } else {
 //                            val x = printTime(100000) { sentence.서술어.perform(sentence, metadata, LOCAL) }
 //                            if (x > 5) {
 //                                println(sentence.서술어.defaultSentence)
 //                            }
-                            result = sentence.서술어.perform(sentence, metadata, LOCAL)
+                            result = sentence.서술어.perform(sentence, metadata, GLOBAL)
                         }
 
                         if (sentence.uncompleted != null) {
@@ -195,7 +195,7 @@ class CodeProcessor(
                         //println("$performIndex: ${sentence.specific!=null}")
 
                         if (postedSpecific != null) {
-                            postedSpecific.perform(sentence, metadata, LOCAL, variableReturns)
+                            postedSpecific.perform(sentence, metadata, GLOBAL, variableReturns)
                             postedSpecific.execute(performIndex, metadata, sentence, sentence.multiProcessData, variableReturns)
                             postedSpecific = null
                         }
@@ -204,7 +204,7 @@ class CodeProcessor(
                             if (sentence.specific is IPredicateSpecificPost) {
                                 postedSpecific = sentence.specific
                             } else {
-                                sentence.specific.perform(sentence, metadata, LOCAL, variableReturns)
+                                sentence.specific.perform(sentence, metadata, GLOBAL, variableReturns)
                                 performIndex = sentence.specific.execute(performIndex, metadata, sentence, sentence.multiProcessData, variableReturns)
                             }
                         }

@@ -10,7 +10,7 @@ import kr.goldenmine.parser.CodeProcessor;
 import kr.goldenmine.parser.parser.*;
 import java.util.ArrayList;
 import java.util.List;
-import kr.goldenmine.parser.parser.disabled.BoeoParser;
+
 import org.testng.annotations.Test;
 
 public class MainTest extends TestCase {
@@ -408,9 +408,8 @@ public class MainTest extends TestCase {
 
     @Test
     public void test27() {
-
         List<String> sources = Arrays.asList(
-                "[A]를 1로 초기화합니다",
+                "[A]를 3로 초기화합니다",
                 "[B]를 4로 초기화합니다",
                 //"[C]를 [A]에 1을 더한 것으로 초기화합니다",
                 "[A]에 [B]을 더해 [C]를 초기화합니다",
@@ -421,6 +420,17 @@ public class MainTest extends TestCase {
         );
 
         runCode(sources, false);
+    }
+
+    @Test
+    public void test28() {
+        List<String> sources = Arrays.asList(
+                "[A]를 1로 초기화합니다",
+                "[B]를 4로 초기화합니다",
+                "[C]를 출력합니다"
+        );
+
+        runCode(sources, true);
     }
 
     // [A]가 [B]라면
@@ -462,7 +472,7 @@ public class MainTest extends TestCase {
         Code code = new Code(sources);
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(debug);
-        codeProcessor.compile(
+        codeProcessor.interpret(
                 new OriginalBackupParser(
                         new GenitiveParser(//new SentenceMultiDataParser(
                             new PronounParser(
@@ -478,7 +488,7 @@ public class MainTest extends TestCase {
                 )
                 //))
                 , null);
-        codeProcessor.compile(new SentenceMultiDataParser(null), null);
+        codeProcessor.interpret(new SentenceMultiDataParser(null), null);
 //        try {
 //            Thread.sleep(1000L);
 //        } catch (InterruptedException e) {

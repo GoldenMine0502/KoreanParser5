@@ -38,7 +38,7 @@ public class SpeedTest {
         Code code = new Code(sources);
         CodeProcessor codeProcessor = new CodeProcessor(code);
         codeProcessor.setDebug(debug);
-        codeProcessor.compile(new SentenceMultiDataParser(new PronounParser(new VariableConnectorParser(new SentenceLastParser(new BoeoParser(new DefaultParser(null)))))),
+        codeProcessor.interpret(new SentenceMultiDataParser(new PronounParser(new VariableConnectorParser(new SentenceLastParser(new BoeoParser(new DefaultParser(null)))))),
                 null);
         codeProcessor.perform(null);
     }
