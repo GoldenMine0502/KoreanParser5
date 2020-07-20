@@ -10,5 +10,4 @@ class IPostPosition비교 : IPostPosition {
             if (last[last.length - 2] == '보' && last[last.length - 1] == '다') 2 else -1
         } else -1
     }
-
 }

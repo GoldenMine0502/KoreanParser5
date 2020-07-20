@@ -19,6 +19,7 @@ class Predicate만들다객체 : IPredicate {
 
     override val optionalSetters: List<Boolean>
         get() = listOf()
+
     override val defaultSentence: String
         get() = "만들다"
 
@@ -45,12 +46,9 @@ class Predicate만들다객체 : IPredicate {
         if (predicate != null) {
             val instance = predicate.instance
 
-//            println(부사어로)
-
             for (i in 부사어로.indices) {
                 instance.setValue(i, 부사어로[i]!!.get())
             }
-//            println(instance)
             return Variable(instance)
         } else {
             throw RuntimeException("해당하는 이름의 객체가 없습니다.")

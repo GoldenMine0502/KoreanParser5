@@ -69,7 +69,7 @@ open class Point3D(x: Double, y: Double, z: Double) : Point2D(x, y) {
                 else -> -1
             }
         } else {
-            throw CompareException("비교하려는 값이 \"xy좌표\"와 비교할 수 있는 값이 아닙니다.")
+            throw CompareException("비교하려는 값이 \"xyz좌표\"와 비교할 수 있는 값이 아닙니다.")
         }
     }
 }
